@@ -77,7 +77,7 @@ endif()
 set(GLFW_BUILD_DOCS OFF)
 set(GLFW_INSTALL OFF)
 # Homework
-# add_subdirectory(src)
+add_subdirectory(src)
 # Third party libs
 add_subdirectory(extern/eigen)
 add_subdirectory(extern/glad)

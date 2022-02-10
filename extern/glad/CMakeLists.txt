@@ -10,5 +10,9 @@ project(GLAD
 
 add_library (glad INTERFACE)
 
+if(MSVC)
+  target_compile_options(glad INTERFACE "/wd4551")
+endif()
+
 target_compile_features(glad INTERFACE c_std_11)
 target_include_directories(glad INTERFACE ${GLAD_SOURCE_DIR}/include)
