@@ -31,8 +31,8 @@ int main() {
   GLFWwindow* window = context.createWindow("HW1", 1280, 720, GLFW_OPENGL_CORE_PROFILE);
 
 #ifndef NDEBUG
-  glContext.printSystemInfo();
-  glContext.enableDebugCallback();
+  context.printSystemInfo();
+  context.enableDebugCallback();
 #endif
 
   glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
