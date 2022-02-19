@@ -19,12 +19,34 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\buffer.cpp" />
+    <ClCompile Include="..\src\camera.cpp" />
+    <ClCompile Include="..\src\cloth.cpp" />
+    <ClCompile Include="..\src\configs.cpp" />
     <ClCompile Include="..\src\glcontext.cpp" />
+    <ClCompile Include="..\src\integrator.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\particles.cpp" />
+    <ClCompile Include="..\src\shader.cpp" />
+    <ClCompile Include="..\src\shape.cpp" />
+    <ClCompile Include="..\src\sphere.cpp" />
+    <ClCompile Include="..\src\vertexarray.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\buffer.h" />
+    <ClInclude Include="..\include\camera.h" />
+    <ClInclude Include="..\include\cloth.h" />
+    <ClInclude Include="..\include\configs.h" />
     <ClInclude Include="..\include\glcontext.h" />
+    <ClInclude Include="..\include\hw1.h" />
+    <ClInclude Include="..\include\integrator.h" />
+    <ClInclude Include="..\include\particles.h" />
+    <ClInclude Include="..\include\shader.h" />
+    <ClInclude Include="..\include\shape.h" />
+    <ClInclude Include="..\include\sphere.h" />
+    <ClInclude Include="..\include\spring.h" />
     <ClInclude Include="..\include\utils.h" />
+    <ClInclude Include="..\include\vertexarray.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
