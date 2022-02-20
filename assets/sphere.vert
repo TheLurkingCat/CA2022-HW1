@@ -22,8 +22,8 @@ layout (std140) uniform camera {
 };
 
 void main() {
-  vs_out.position = vec3(modelMatrix * (vec4(position_in, 1.0) + offset_in));
+  vs_out.position = vec3(modelMatrix * (vec4(position_in, 1.0))) + offset_in.xyz;
   vs_out.normal = normalize(mat3(normalMatrix) * normal_in);
   vs_out.viewPosition = viewPosition.xyz;
-  gl_Position = viewProjectionMatrix * modelMatrix * (vec4(position_in, 1.0) + offset_in);
+  gl_Position = viewProjectionMatrix * (modelMatrix * (vec4(position_in, 1.0)) + vec4(offset_in.xyz, 0.0));
 }

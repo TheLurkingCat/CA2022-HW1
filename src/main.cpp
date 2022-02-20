@@ -114,11 +114,12 @@ int main() {
   meshUBO.load(16 * sizeof(GLfloat), 16 * sizeof(GLfloat), cloth.getNormalMatrix().data());
 
   Spheres& spheres = Spheres::initSpheres();
-  spheres.addSphere(Eigen::Vector4f(0, 2, 0, 1));
+
+  spheres.addSphere(Eigen::Vector4f(0, 1, 0, 1), 0.5f);
   meshUBO.load(meshOffset, 16 * sizeof(GLfloat), spheres.getModelMatrix().data());
   meshUBO.load(meshOffset + 16 * sizeof(GLfloat), 16 * sizeof(GLfloat), spheres.getNormalMatrix().data());
 
-  Camera camera(Eigen::Vector4f(0, 5, -10, 1));
+  Camera camera(Eigen::Vector4f(0, 2, -10, 1));
   UniformBuffer cameraUBO;
   cameraUBO.allocate(uboAlign(20 * sizeof(GLfloat)));
   cameraUBO.load(0, 16 * sizeof(GLfloat), camera.getViewProjectionMatrix().data());
@@ -140,13 +141,20 @@ int main() {
       cameraUBO.load(0, 16 * sizeof(GLfloat), camera.getViewProjectionMatrix().data());
       cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.getPosition().data());
     }
-    particleRenderer.use();
-    // clothRenderer.use();
-    cloth.update(explicitEuler);
-    spheres.update(explicitEuler);
+    for (int i = 0; i < simulationPerFrame; i++) {
+      cloth.update(explicitEuler);
+      spheres.update(explicitEuler);
+      spheres.collide(&cloth);
+    }
 
+    particleRenderer.use();
     meshUBO.bindUniformBlockIndex(0, 0, meshOffset);
     cloth.draw(Cloth::DrawType::STRUCTURAL);
+    cloth.draw(Cloth::DrawType::SHEAR);
+    // clothRenderer.use();
+    // glDisable(GL_CULL_FACE);
+    // cloth.draw(Cloth::DrawType::FULL);
+    // glEnable(GL_CULL_FACE);
     sphereRenderer.use();
     meshUBO.bindUniformBlockIndex(0, meshOffset, meshOffset);
     spheres.draw();

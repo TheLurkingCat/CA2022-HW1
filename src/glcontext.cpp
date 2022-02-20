@@ -1,5 +1,6 @@
 #include "glcontext.h"
 
+#include <cstring>
 #include <iomanip>
 #include <iostream>
 namespace {

@@ -12,7 +12,9 @@ class Cloth final : public Shape {
   enum class DrawType { FULL, STRUCTURAL, SHEAR, BEND };
   Cloth();
   void draw(DrawType type) const;
-  void update(const Integrator& integrator);
+  void update(const Integrator& integrator) override;
+  void collide(Shape* shape) override;
+  void collide(Spheres* sphere) override;
 
  private:
   void initializeVertex();

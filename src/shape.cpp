@@ -4,8 +4,8 @@
 
 using Eigen::Matrix4f;
 
-Shape::Shape(int size) noexcept :
-    particles(size), modelMatrix(Matrix4f::Identity()), normalMatrix(Matrix4f::Identity()) {}
+Shape::Shape(int size, float mass_) noexcept :
+    _particles(size, mass_), modelMatrix(Matrix4f::Identity()), normalMatrix(Matrix4f::Identity()) {}
 
 void Shape::setModelMatrix(const Eigen::Matrix4f& _modelMatrix) {
   modelMatrix = _modelMatrix;

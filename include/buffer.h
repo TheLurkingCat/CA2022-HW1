@@ -12,9 +12,9 @@ class Buffer {
   virtual ~Buffer();
 
   void bind() const noexcept;
-  void allocate(GLsizeiptr _size, GLenum usage = GL_DYNAMIC_DRAW) noexcept;
-  void load(GLintptr offset, GLsizeiptr _size, const void* data) noexcept;
-  void allocate_load(GLsizeiptr _size, const void* data, GLenum usage = GL_STATIC_DRAW) noexcept;
+  void allocate(GLsizeiptr _size, GLenum usage = GL_DYNAMIC_DRAW) const noexcept;
+  void load(GLintptr offset, GLsizeiptr _size, const void* data) const noexcept;
+  void allocate_load(GLsizeiptr _size, const void* data, GLenum usage = GL_STATIC_DRAW) const noexcept;
 
   CONSTEXPR_VIRTUAL virtual const char* getTypeName() const noexcept = 0;
   CONSTEXPR_VIRTUAL virtual GLenum getType() const noexcept = 0;
@@ -23,7 +23,7 @@ class Buffer {
 
  protected:
   GLuint handle;
-  GLsizeiptr size;
+  mutable GLsizeiptr size;
 };
 
 class ArrayBuffer final : public Buffer {

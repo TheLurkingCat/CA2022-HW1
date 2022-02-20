@@ -4,15 +4,16 @@ set(HW1_SOURCE
   ${HW1_SOURCE_DIR}/buffer.cpp
   ${HW1_SOURCE_DIR}/camera.cpp
   ${HW1_SOURCE_DIR}/cloth.cpp
+  ${HW1_SOURCE_DIR}/configs.cpp
+  ${HW1_SOURCE_DIR}/glcontext.cpp
+  ${HW1_SOURCE_DIR}/integrator.cpp
+  ${HW1_SOURCE_DIR}/main.cpp
+  ${HW1_SOURCE_DIR}/particles.cpp
+  ${HW1_SOURCE_DIR}/scene.cpp
   ${HW1_SOURCE_DIR}/shader.cpp
   ${HW1_SOURCE_DIR}/shape.cpp
   ${HW1_SOURCE_DIR}/sphere.cpp
-  ${HW1_SOURCE_DIR}//vertexarray.cpp
-  ${HW1_SOURCE_DIR}/integrator.cpp
-  ${HW1_SOURCE_DIR}/particles.cpp
-  ${HW1_SOURCE_DIR}/configs.cpp
-  ${HW1_SOURCE_DIR}/glcontext.cpp
-  ${HW1_SOURCE_DIR}/main.cpp
+  ${HW1_SOURCE_DIR}/vertexarray.cpp
 )
 
 set(HW1_INCLUDE_DIR ${HW1_SOURCE_DIR}/../include)

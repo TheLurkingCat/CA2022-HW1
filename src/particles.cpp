@@ -1,7 +1,7 @@
 #include "particles.h"
 
-Particles::Particles(int size) noexcept :
-    _position(4, size), _velocity(4, size), _acceleration(4, size), _mass(size, 0.0f) {
+Particles::Particles(int size, float mass_) noexcept :
+    _position(4, size), _velocity(4, size), _acceleration(4, size), _mass(size, mass_) {
   _position.setZero();
   _velocity.setZero();
   _acceleration.setZero();
