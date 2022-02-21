@@ -2,9 +2,10 @@
 
 ## Dependencies
 
+- [Eigen](https://eigen.tuxfamily.org)
 - [glfw](https://github.com/glfw/glfw)
 - [glad](https://github.com/Dav1dde/glad)
-- [Dear ImGui](https://github.com/ocornut/imgui.git)
+- [Dear ImGui](https://github.com/ocornut/imgui)
 
 ### Dependencies for Windows
 
