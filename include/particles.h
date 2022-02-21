@@ -6,6 +6,7 @@ class Particles {
  public:
   Particles(int size = -1, float mass_ = 0.0f) noexcept;
   void resize(int newSize);
+  void setZero();
 
   int getCapacity() const { return static_cast<int>(_position.cols()); }
   // Get all particles.

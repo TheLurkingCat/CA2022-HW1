@@ -6,6 +6,13 @@ Particles::Particles(int size, float mass_) noexcept :
   _velocity.setZero();
   _acceleration.setZero();
 }
+
+void Particles::setZero() {
+  _position.setZero();
+  _velocity.setZero();
+  _acceleration.setZero();
+}
+
 void Particles::resize(int newSize) {
   _position.conservativeResize(Eigen::NoChange, newSize);
   _velocity.conservativeResize(Eigen::NoChange, newSize);

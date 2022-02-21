@@ -5,12 +5,6 @@
 
 #include <Eigen/Core>
 
-#ifdef __APPLE__
-#ifndef HAS_CXX20_SUPPORT
-#define HAS_CXX20_SUPPORT 0
-#endif
-#endif
-
 #ifndef DELETE_COPY
 #define DELETE_COPY(ClassName)           \
   ClassName(const ClassName &) = delete; \
@@ -41,43 +35,21 @@
   DEFAULT_MOVE(ClassName)
 #endif
 
-#ifndef THROW_EXCEPTION
-#define THROW_EXCEPTION(ExceptionType, message)                                                                      \
-  do {                                                                                                               \
-    throw ExceptionType(std::string("[") + __FILE__ + ":" + std::to_string(__LINE__) + "] " + std::string(message)); \
-  } while (false)
+// Some useful C++ 20 feature
+#if __cplusplus >= 202002L && !defined(__APPLE__)
+#ifndef CONSTEXPR_VIRTUAL
+#define CONSTEXPR_VIRTUAL constexpr
+#endif
 #endif
 
-#ifndef HAS_CXX20_SUPPORT
-#if __cplusplus >= 202002L
-#define HAS_CXX20_SUPPORT 1
-#include <bit>
-#else
-#define HAS_CXX20_SUPPORT 0
-#endif  // __cplusplus >= 202002L
-#endif  // HAS_CXX20_SUPPORT
-
-// Some useful C++ 20 feature
+// Fallbacks
 #ifndef CONSTEXPR_VIRTUAL
-#if HAS_CXX20_SUPPORT
-#define CONSTEXPR_VIRTUAL constexpr
-#else
 #define CONSTEXPR_VIRTUAL
-#endif  // HAS_CXX20_SUPPORT
-#endif  // CONSTEXPR_VIRTUAL
-// Some useful functions
-namespace utils {
-
-namespace fs = std::filesystem;
-#if HAS_CXX20_SUPPORT
-constexpr inline uint32_t log2(uint32_t n) { return std::bit_width(n) - 1; }
-#else
-constexpr inline uint32_t log2(uint32_t n) { return (n > 0) ? 1 + log2(n >> 1) : 0; }
-#endif  // HAS_CXX20_SUPPORT
-}  // namespace utils
+#endif
 
 constexpr float toRadians(double x) { return static_cast<float>(x * EIGEN_PI / 180); }
 
 Eigen::Matrix4f lookAt(const Eigen::Vector4f &position, const Eigen::Vector4f &front, const Eigen::Vector4f &up);
 Eigen::Matrix4f perspective(float fov, float aspect, float zNear, float zFar);
 Eigen::Matrix4f ortho(float left, float right, float bottom, float top, float zNear, float zFar);
+std::filesystem::path findPath(const std::string &filename);

@@ -64,45 +64,31 @@ int main() {
   glClearColor(0, 0, 0, 1);
   glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &alignSize);
 
-  ShaderProgram clothRenderer, sphereRenderer, particleRenderer;
-  {
-    VertexShader vs;
-    GeometryShader gs;
-    FragmentShader fs;
-    vs.fromFile("../assets/cloth.vert");
-    gs.fromFile("../assets/cloth.geom");
-    fs.fromFile("../assets/cloth.frag");
-    clothRenderer.attach(&vs, &gs, &fs);
-    clothRenderer.link();
-    clothRenderer.detach(&vs, &gs, &fs);
-    clothRenderer.use();
-
-    clothRenderer.uniformBlockBinding("model", 0);
-    clothRenderer.uniformBlockBinding("camera", 1);
-  }
+  ShaderProgram sphereRenderer, particleRenderer;
   {
     VertexShader vs;
     FragmentShader fs;
-    vs.fromFile("../assets/sphere.vert");
-    fs.fromFile("../assets/sphere.frag");
+    vs.fromFile(findPath("simple/sphere.vert"));
+    fs.fromFile(findPath("simple/sphere.frag"));
     sphereRenderer.attach(&vs, &fs);
     sphereRenderer.link();
     sphereRenderer.detach(&vs, &fs);
     sphereRenderer.use();
-
+    sphereRenderer.setUniform("color", sphereColor);
     sphereRenderer.uniformBlockBinding("model", 0);
     sphereRenderer.uniformBlockBinding("camera", 1);
   }
   {
     VertexShader vs;
     FragmentShader fs;
-    vs.fromFile("../assets/particle.vert");
-    fs.fromFile("../assets/particle.frag");
+    vs.fromFile(findPath("simple/particle.vert"));
+    fs.fromFile(findPath("simple/particle.frag"));
     particleRenderer.attach(&vs, &fs);
     particleRenderer.link();
     particleRenderer.detach(&vs, &fs);
     particleRenderer.use();
 
+    particleRenderer.setUniform("color", clothColor);
     particleRenderer.uniformBlockBinding("model", 0);
     particleRenderer.uniformBlockBinding("camera", 1);
   }
@@ -146,6 +132,7 @@ int main() {
       cameraUBO.load(0, 16 * sizeof(GLfloat), camera.getViewProjectionMatrix().data());
       cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.getPosition().data());
     }
+
     for (int i = 0; i < simulationPerFrame; i++) {
       cloth.update(explicitEuler);
       spheres.update(explicitEuler);
@@ -154,6 +141,7 @@ int main() {
     }
 
     particleRenderer.use();
+    if (isClothColorChange) particleRenderer.setUniform("color", clothColor);
     meshUBO.bindUniformBlockIndex(0, 0, meshOffset);
     cloth.draw(Cloth::DrawType::STRUCTURAL);
     cloth.draw(Cloth::DrawType::SHEAR);
@@ -162,6 +150,7 @@ int main() {
     // cloth.draw(Cloth::DrawType::FULL);
     // glEnable(GL_CULL_FACE);
     sphereRenderer.use();
+    if (isSphereColorChange) sphereRenderer.setUniform("color", sphereColor);
     meshUBO.bindUniformBlockIndex(0, meshOffset, meshOffset);
     spheres.draw();
 

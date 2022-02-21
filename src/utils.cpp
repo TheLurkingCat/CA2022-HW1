@@ -1,8 +1,25 @@
 #include "utils.h"
 #include <Eigen/Dense>
+#include <iostream>
 
 using Eigen::Matrix4f;
 using Eigen::Vector4f;
+
+namespace {
+std::filesystem::path findAssetPath() {
+  namespace fs = std::filesystem;
+  std::filesystem::path assetPath = fs::current_path();
+  while (!fs::exists(assetPath / "assets/.placeholder") && assetPath.has_relative_path()) {
+    assetPath = assetPath.parent_path();
+  }
+  if (!fs::exists(assetPath / "assets/.placeholder")) {
+    std::cerr << "Asset not found" << std::endl;
+    exit(EXIT_FAILURE);
+  }
+  assetPath /= "assets";
+  return assetPath;
+}
+}  // namespace
 
 Matrix4f lookAt(const Vector4f& position, const Vector4f& front, const Vector4f& up) {
   Vector4f f = front.normalized();
@@ -43,4 +60,9 @@ Matrix4f ortho(float left, float right, float bottom, float top, float zNear, fl
   mat(3, 1) = -(top + bottom) / (top - bottom);
   mat(3, 2) = -(zFar + zNear) / (zFar - zNear);
   return mat;
+}
+
+std::filesystem::path findPath(const std::string& filename) {
+  static std::filesystem::path assetPath = findAssetPath();
+  return assetPath / filename;
 }

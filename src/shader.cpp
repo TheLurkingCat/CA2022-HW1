@@ -3,7 +3,7 @@
 #include <string>
 
 namespace {
-std::string readFile(const utils::fs::path& filename) {
+std::string readFile(const std::filesystem::path& filename) {
   std::ifstream shaderFile(filename);
   if (!shaderFile) {
     std::string err = "Cannot open shader file: " + filename.string();
@@ -40,7 +40,7 @@ bool Shader::checkCompileState() const {
   return success;
 }
 
-void Shader::fromFile(const utils::fs::path& filename) const { this->fromString(readFile(filename)); }
+void Shader::fromFile(const std::filesystem::path& filename) const { this->fromString(readFile(filename)); }
 
 void Shader::fromString(const std::string& shaderCode) const {
   auto shaderCodePointer = shaderCode.c_str();
@@ -123,5 +123,5 @@ void ShaderProgram::setUniform(const char* name, const Eigen::Matrix4f& mat4) {
   glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, mat4.data());
 }
 void ShaderProgram::setUniform(const char* name, const Eigen::Vector4f& vec4) {
-  glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, vec4.data());
+  glUniform4fv(getUniformLocation(name), 1, vec4.data());
 }

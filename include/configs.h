@@ -1,4 +1,5 @@
 #pragma once
+#include <Eigen/Core>
 // constants
 inline constexpr int particlesPerEdge = 25;
 inline constexpr int clothWidth = 2;
@@ -23,3 +24,9 @@ extern int simulationPerFrame;
 
 extern float springCoef;
 extern float damperCoef;
+
+extern Eigen::Vector4f sphereColor;
+extern Eigen::Vector4f clothColor;
+
+extern bool isSphereColorChange;
+extern bool isClothColorChange;
