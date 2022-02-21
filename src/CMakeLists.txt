@@ -6,6 +6,7 @@ set(HW1_SOURCE
   ${HW1_SOURCE_DIR}/cloth.cpp
   ${HW1_SOURCE_DIR}/configs.cpp
   ${HW1_SOURCE_DIR}/glcontext.cpp
+  ${HW1_SOURCE_DIR}/gui.cpp
   ${HW1_SOURCE_DIR}/integrator.cpp
   ${HW1_SOURCE_DIR}/main.cpp
   ${HW1_SOURCE_DIR}/particles.cpp
@@ -42,4 +43,5 @@ target_link_libraries(HW1
   PRIVATE glad
   PRIVATE glfw
   PRIVATE eigen
+  PRIVATE dearimgui
 )

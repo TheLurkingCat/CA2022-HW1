@@ -55,6 +55,7 @@ int main() {
   context.printSystemInfo();
   context.enableDebugCallback();
 #endif
+  GUI gui(window, context.getOpenGLVersion());
 
   glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
   glViewport(0, 0, windowWidth, windowHeight);
@@ -163,10 +164,13 @@ int main() {
     sphereRenderer.use();
     meshUBO.bindUniformBlockIndex(0, meshOffset, meshOffset);
     spheres.draw();
+
+    gui.render();
 #ifdef __APPLE__
     glFlush();
 #endif
     glfwSwapBuffers(window);
   }
+  glfwDestroyWindow(window);
   return 0;
 }
