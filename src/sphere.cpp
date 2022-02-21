@@ -61,25 +61,27 @@ Spheres& Spheres::initSpheres() {
 }
 
 void Spheres::addSphere(const Eigen::Vector4f& position, float size) {
-  if (sphereCount == _particles.getCapacity()) {
+  bool needResize = sphereCount == _particles.getCapacity();
+  if (needResize) {
     _particles.resize(sphereCount * 2);
     _radius.resize(sphereCount * 2);
-    offsets.allocate(8 * sphereCount * sizeof(float));
   }
-  Eigen::Affine3f transformation = Eigen::Affine3f::Identity();
-  transformation.scale(size);
-  setModelMatrix(transformation.matrix());
   _radius[sphereCount] = size;
-
   _particles.position(sphereCount) = position;
   _particles.velocity(sphereCount).setZero();
   _particles.acceleration(sphereCount).setZero();
   _particles.mass(sphereCount) = 1000 * size * size * size;
+
+  if (needResize) {
+    offsets.allocate(8 * sphereCount * sizeof(float));
+    sizes.allocate_load(2 * sphereCount * sizeof(float), _radius.data());
+  }
   ++sphereCount;
 }
 
 Spheres::Spheres() : Shape(1, 1), sphereCount(0), _radius(1, 0.0f) {
-  offsets.allocate(4 * 1 * sizeof(float));
+  offsets.allocate(4 * sizeof(float));
+  sizes.allocate(sizeof(float), GL_STATIC_DRAW);
 
   std::vector<GLfloat> vertices;
   std::vector<GLuint> indices;
@@ -103,8 +105,12 @@ Spheres::Spheres() : Shape(1, 1), sphereCount(0), _radius(1, 0.0f) {
   glVertexAttribDivisor(2, 0);
   offsets.bind();
   vao.enable(3);
-  vao.setAttributePointer(3, 4, 4, 0);
+  vao.setAttributePointer(3, 3, 4, 0);
   glVertexAttribDivisor(3, 1);
+  sizes.bind();
+  vao.enable(4);
+  vao.setAttributePointer(4, 1, 1, 0);
+  glVertexAttribDivisor(4, 1);
 
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -154,4 +160,32 @@ void Spheres::collide(Cloth* cloth) {
     }
   }
 }
-void Spheres::collide() {}
+void Spheres::collide() {
+  constexpr float coefRestitution = 0.8f;
+
+  for (int i = 0; i < sphereCount; ++i) {
+    float sphere1Mass = _particles.mass(i);
+    float inverseSphere1Mass = sphere1Mass == 0.0f ? 0.0f : 1.0f / sphere1Mass;
+    for (int j = i + 1; j < sphereCount; ++j) {
+      float sphere2Mass = _particles.mass(j);
+      float inverseSphere2Mass = sphere2Mass == 0.0f ? 0.0f : 1.0f / sphere2Mass;
+
+      Eigen::Vector4f normal = _particles.position(i) - _particles.position(j);
+      Eigen::Vector4f relativeVelocity = _particles.velocity(i) - _particles.velocity(j);
+      float distance = normal.norm();
+      float penetration = (_radius[i] + _radius[j]) - distance;
+      if (penetration < 0) continue;
+      normal.normalize();
+      auto normalVelocity = normal * relativeVelocity.dot(normal);
+
+      if (relativeVelocity.dot(normal) < 0) {
+        auto impulse = -(1 + coefRestitution) * normalVelocity / (inverseSphere1Mass + inverseSphere2Mass);
+        _particles.velocity(i) += impulse * inverseSphere1Mass;
+        _particles.velocity(j) -= impulse * inverseSphere2Mass;
+      }
+      auto correction = penetration * normal * 0.6f / (inverseSphere1Mass + inverseSphere2Mass);
+      _particles.position(i) += correction * inverseSphere1Mass;
+      _particles.position(j) -= correction * inverseSphere2Mass;
+    }
+  }
+}

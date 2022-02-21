@@ -3,6 +3,8 @@
 #include <stdexcept>
 #include <string>
 
+#include <Eigen/Core>
+
 #ifdef __APPLE__
 #ifndef HAS_CXX20_SUPPORT
 #define HAS_CXX20_SUPPORT 0
@@ -65,6 +67,7 @@
 #endif  // CONSTEXPR_VIRTUAL
 // Some useful functions
 namespace utils {
+
 namespace fs = std::filesystem;
 #if HAS_CXX20_SUPPORT
 constexpr inline uint32_t log2(uint32_t n) { return std::bit_width(n) - 1; }
@@ -72,3 +75,9 @@ constexpr inline uint32_t log2(uint32_t n) { return std::bit_width(n) - 1; }
 constexpr inline uint32_t log2(uint32_t n) { return (n > 0) ? 1 + log2(n >> 1) : 0; }
 #endif  // HAS_CXX20_SUPPORT
 }  // namespace utils
+
+constexpr float toRadians(double x) { return x * EIGEN_PI / 180.0; }
+
+Eigen::Matrix4f lookAt(const Eigen::Vector4f &position, const Eigen::Vector4f &front, const Eigen::Vector4f &up);
+Eigen::Matrix4f perspective(float fov, float aspect, float zNear, float zFar);
+Eigen::Matrix4f ortho(float left, float right, float bottom, float top, float zNear, float zFar);

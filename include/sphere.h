@@ -25,5 +25,6 @@ class Spheres final : public Shape {
   VertexArray vao;
   ArrayBuffer vbo;
   ArrayBuffer offsets;
+  ArrayBuffer sizes;
   ElementArrayBuffer ebo;
 };

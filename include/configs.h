@@ -1,13 +1,14 @@
 #pragma once
 // constants
-constexpr int particlesPerEdge = 25;
-constexpr int clothWidth = 2;
-constexpr int clothHeight = 2;
-constexpr float particleMass = (clothWidth * clothHeight) * 2.5f / (particlesPerEdge * particlesPerEdge);
-constexpr float baseSpeed = 1e-3f;
+inline constexpr int particlesPerEdge = 25;
+inline constexpr int clothWidth = 2;
+inline constexpr int clothHeight = 2;
+inline constexpr float particleMass = (clothWidth * clothHeight) * 2.5f / (particlesPerEdge * particlesPerEdge);
+inline constexpr float sphereDensity = 1000.0f;
+inline constexpr float baseSpeed = 1e-3f;
 
-constexpr int sphereSlice = 360;
-constexpr int sphereStack = 180;
+inline constexpr int sphereSlice = 360;
+inline constexpr int sphereStack = 180;
 
 // variables
 

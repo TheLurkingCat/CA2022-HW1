@@ -7,8 +7,8 @@ Particles::Particles(int size, float mass_) noexcept :
   _acceleration.setZero();
 }
 void Particles::resize(int newSize) {
-  _position.resize(Eigen::NoChange, newSize);
-  _velocity.resize(Eigen::NoChange, newSize);
-  _acceleration.resize(Eigen::NoChange, newSize);
+  _position.conservativeResize(Eigen::NoChange, newSize);
+  _velocity.conservativeResize(Eigen::NoChange, newSize);
+  _acceleration.conservativeResize(Eigen::NoChange, newSize);
   _mass.resize(newSize, 0.0f);
 }

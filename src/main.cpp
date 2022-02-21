@@ -115,7 +115,11 @@ int main() {
 
   Spheres& spheres = Spheres::initSpheres();
 
-  spheres.addSphere(Eigen::Vector4f(0, 1, 0, 1), 0.5f);
+  spheres.addSphere(Eigen::Vector4f(-0.75, 2, -0.75, 1), 0.5f);
+  spheres.addSphere(Eigen::Vector4f(0.75, 2, -0.75, 1), 0.5f);
+  spheres.addSphere(Eigen::Vector4f(-0.75, 2, 0.75, 1), 0.5f);
+  spheres.addSphere(Eigen::Vector4f(0.75, 2, 0.75, 1), 0.5f);
+  spheres.addSphere(Eigen::Vector4f(0, 4, 0, 1), 0.5f);
   meshUBO.load(meshOffset, 16 * sizeof(GLfloat), spheres.getModelMatrix().data());
   meshUBO.load(meshOffset + 16 * sizeof(GLfloat), 16 * sizeof(GLfloat), spheres.getNormalMatrix().data());
 
@@ -145,6 +149,7 @@ int main() {
       cloth.update(explicitEuler);
       spheres.update(explicitEuler);
       spheres.collide(&cloth);
+      spheres.collide();
     }
 
     particleRenderer.use();
