@@ -20,8 +20,8 @@ class Spheres final : public Shape {
  private:
   Spheres();
 
-  std::vector<float> _radius;
   int sphereCount;
+  std::vector<float> _radius;
   VertexArray vao;
   ArrayBuffer vbo;
   ArrayBuffer offsets;
