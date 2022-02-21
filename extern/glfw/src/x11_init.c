@@ -568,11 +568,7 @@ static void detectEWMH(void)
 //
 static GLFWbool initExtensions(void)
 {
-#if defined(__OpenBSD__)
-    _glfw.x11.vidmode.handle = _glfw_dlopen("libXxf86vm.so");
-#else
     _glfw.x11.vidmode.handle = _glfw_dlopen("libXxf86vm.so.1");
-#endif
     if (_glfw.x11.vidmode.handle)
     {
         _glfw.x11.vidmode.QueryExtension = (PFN_XF86VidModeQueryExtension)
@@ -592,8 +588,6 @@ static GLFWbool initExtensions(void)
 
 #if defined(__CYGWIN__)
     _glfw.x11.xi.handle = _glfw_dlopen("libXi-6.so");
-#elif defined(__OpenBSD__)
-    _glfw.x11.xi.handle = _glfw_dlopen("libXi.so");
 #else
     _glfw.x11.xi.handle = _glfw_dlopen("libXi.so.6");
 #endif
@@ -624,8 +618,6 @@ static GLFWbool initExtensions(void)
 
 #if defined(__CYGWIN__)
     _glfw.x11.randr.handle = _glfw_dlopen("libXrandr-2.so");
-#elif defined(__OpenBSD__)
-    _glfw.x11.randr.handle = _glfw_dlopen("libXrandr.so");
 #else
     _glfw.x11.randr.handle = _glfw_dlopen("libXrandr.so.2");
 #endif
@@ -718,8 +710,6 @@ static GLFWbool initExtensions(void)
 
 #if defined(__CYGWIN__)
     _glfw.x11.xcursor.handle = _glfw_dlopen("libXcursor-1.so");
-#elif defined(__OpenBSD__)
-    _glfw.x11.xcursor.handle = _glfw_dlopen("libXcursor.so");
 #else
     _glfw.x11.xcursor.handle = _glfw_dlopen("libXcursor.so.1");
 #endif
@@ -735,8 +725,6 @@ static GLFWbool initExtensions(void)
 
 #if defined(__CYGWIN__)
     _glfw.x11.xinerama.handle = _glfw_dlopen("libXinerama-1.so");
-#elif defined(__OpenBSD__)
-    _glfw.x11.xinerama.handle = _glfw_dlopen("libXinerama.so");
 #else
     _glfw.x11.xinerama.handle = _glfw_dlopen("libXinerama.so.1");
 #endif
@@ -788,8 +776,6 @@ static GLFWbool initExtensions(void)
 
 #if defined(__CYGWIN__)
     _glfw.x11.x11xcb.handle = _glfw_dlopen("libX11-xcb-1.so");
-#elif defined(__OpenBSD__)
-    _glfw.x11.x11xcb.handle = _glfw_dlopen("libX11-xcb.so");
 #else
     _glfw.x11.x11xcb.handle = _glfw_dlopen("libX11-xcb.so.1");
 #endif
@@ -801,8 +787,6 @@ static GLFWbool initExtensions(void)
 
 #if defined(__CYGWIN__)
     _glfw.x11.xrender.handle = _glfw_dlopen("libXrender-1.so");
-#elif defined(__OpenBSD__)
-    _glfw.x11.xrender.handle = _glfw_dlopen("libXrender.so");
 #else
     _glfw.x11.xrender.handle = _glfw_dlopen("libXrender.so.1");
 #endif
