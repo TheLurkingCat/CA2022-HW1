@@ -15,8 +15,8 @@ void generateVertices(std::vector<GLfloat>& vertices, std::vector<GLuint>& indic
   float x, y, z, xy;  //  position
   float s, t;         //  texCoord
 
-  float sectorStep = EIGEN_PI * 2 / sphereSlice;
-  float stackStep = EIGEN_PI / sphereStack;
+  float sectorStep = static_cast<float>(EIGEN_PI * 2 / sphereSlice);
+  float stackStep = static_cast<float>(EIGEN_PI / sphereStack);
   float sectorAngle, stackAngle;
 
   for (int i = 0; i <= sphereStack; ++i) {
@@ -126,7 +126,7 @@ void Spheres::draw() const {
 }
 
 void Spheres::update(const Integrator& integrator) {
-  _particles.acceleration().colwise() = Eigen::Vector4f(0, -9.8, 0, 0);
+  _particles.acceleration().colwise() = Eigen::Vector4f(0, -9.8f, 0, 0);
   integrator.integrate(_particles);
 }
 

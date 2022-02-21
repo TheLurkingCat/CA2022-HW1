@@ -25,12 +25,12 @@ Matrix4f perspective(float fov, float aspect, float zNear, float zFar) {
   Eigen::Transform<float, 3, Eigen::Projective> tr;
   tr.matrix().setZero();
 
-  float tanFOV2 = std::tan(fov / 2.0);
-  tr(0, 0) = 1.0 / (aspect * tanFOV2);
-  tr(1, 1) = 1.0 / (tanFOV2);
+  float tanFOV2 = std::tan(fov / 2.0f);
+  tr(0, 0) = 1.0f / (aspect * tanFOV2);
+  tr(1, 1) = 1.0f / (tanFOV2);
   tr(2, 2) = -(zFar + zNear) / (zFar - zNear);
-  tr(3, 2) = -1.0;
-  tr(2, 3) = -(2.0 * zFar * zNear) / (zFar - zNear);
+  tr(3, 2) = -1.0f;
+  tr(2, 3) = -(2.0f * zFar * zNear) / (zFar - zNear);
   return tr.matrix();
 }
 

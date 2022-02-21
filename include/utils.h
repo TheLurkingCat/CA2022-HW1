@@ -76,7 +76,7 @@ constexpr inline uint32_t log2(uint32_t n) { return (n > 0) ? 1 + log2(n >> 1) :
 #endif  // HAS_CXX20_SUPPORT
 }  // namespace utils
 
-constexpr float toRadians(double x) { return x * EIGEN_PI / 180.0; }
+constexpr float toRadians(double x) { return static_cast<float>(x * EIGEN_PI / 180); }
 
 Eigen::Matrix4f lookAt(const Eigen::Vector4f &position, const Eigen::Vector4f &front, const Eigen::Vector4f &up);
 Eigen::Matrix4f perspective(float fov, float aspect, float zNear, float zFar);

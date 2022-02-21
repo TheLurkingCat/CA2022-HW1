@@ -153,7 +153,7 @@ void Cloth::initializeSpring() {
 
 void Cloth::update(const Integrator& integrator) {
   // External force (Gravity)
-  _particles.acceleration().colwise() = Eigen::Vector4f(0, -9.8, 0, 0);
+  _particles.acceleration().colwise() = Eigen::Vector4f(0, -9.8f, 0, 0);
   // Internal force (Spring)
   for (const auto& spring : springs) {
     int startID = spring.startParticleIndex();

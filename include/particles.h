@@ -7,7 +7,7 @@ class Particles {
   Particles(int size = -1, float mass_ = 0.0f) noexcept;
   void resize(int newSize);
 
-  int getCapacity() const { return _position.cols(); }
+  int getCapacity() const { return static_cast<int>(_position.cols()); }
   // Get all particles.
   Eigen::Ref<Eigen::Matrix4Xf> position() { return _position; }
   Eigen::Ref<Eigen::Matrix4Xf> velocity() { return _velocity; }
