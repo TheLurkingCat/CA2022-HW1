@@ -198,17 +198,11 @@
     <ClCompile Include="$(SolutionDir)extern\glfw\src\init.c" />
     <ClCompile Include="$(SolutionDir)extern\glfw\src\input.c" />
     <ClCompile Include="$(SolutionDir)extern\glfw\src\monitor.c" />
-    <ClCompile Include="$(SolutionDir)extern\glfw\src\null_init.c" />
-    <ClCompile Include="$(SolutionDir)extern\glfw\src\null_joystick.c" />
-    <ClCompile Include="$(SolutionDir)extern\glfw\src\null_monitor.c" />
-    <ClCompile Include="$(SolutionDir)extern\glfw\src\null_window.c" />
     <ClCompile Include="$(SolutionDir)extern\glfw\src\osmesa_context.c" />
-    <ClCompile Include="$(SolutionDir)extern\glfw\src\platform.c" />
     <ClCompile Include="$(SolutionDir)extern\glfw\src\vulkan.c" />
     <ClCompile Include="$(SolutionDir)extern\glfw\src\wgl_context.c" />
     <ClCompile Include="$(SolutionDir)extern\glfw\src\win32_init.c" />
     <ClCompile Include="$(SolutionDir)extern\glfw\src\win32_joystick.c" />
-    <ClCompile Include="$(SolutionDir)extern\glfw\src\win32_module.c" />
     <ClCompile Include="$(SolutionDir)extern\glfw\src\win32_monitor.c" />
     <ClCompile Include="$(SolutionDir)extern\glfw\src\win32_thread.c" />
     <ClCompile Include="$(SolutionDir)extern\glfw\src\win32_time.c" />

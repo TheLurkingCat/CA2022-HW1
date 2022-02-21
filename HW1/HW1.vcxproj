@@ -19,6 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\extern\imgui\src\imgui.cpp" />
+    <ClCompile Include="..\extern\imgui\src\imgui_demo.cpp" />
+    <ClCompile Include="..\extern\imgui\src\imgui_draw.cpp" />
+    <ClCompile Include="..\extern\imgui\src\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\extern\imgui\src\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="..\extern\imgui\src\imgui_tables.cpp" />
+    <ClCompile Include="..\extern\imgui\src\imgui_widgets.cpp" />
     <ClCompile Include="..\src\buffer.cpp" />
     <ClCompile Include="..\src\camera.cpp" />
     <ClCompile Include="..\src\cloth.cpp" />
@@ -30,6 +37,7 @@
     <ClCompile Include="..\src\shader.cpp" />
     <ClCompile Include="..\src\shape.cpp" />
     <ClCompile Include="..\src\sphere.cpp" />
+    <ClCompile Include="..\src\utils.cpp" />
     <ClCompile Include="..\src\vertexarray.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -141,7 +149,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_CUSTOM;GLFW_INCLUDE_NONE;GLFW_DLL;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EIGEN_DONT_PARALLELIZE;EIGEN_MPL2_ONLY;IMGUI_IMPL_OPENGL_LOADER_CUSTOM;GLFW_INCLUDE_NONE;GLFW_DLL;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -164,7 +172,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_CUSTOM;GLFW_INCLUDE_NONE;GLFW_DLL;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EIGEN_DONT_PARALLELIZE;EIGEN_MPL2_ONLY;IMGUI_IMPL_OPENGL_LOADER_CUSTOM;GLFW_INCLUDE_NONE;GLFW_DLL;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -188,7 +196,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_CUSTOM;GLFW_INCLUDE_NONE;GLFW_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EIGEN_DONT_PARALLELIZE;EIGEN_MPL2_ONLY;IMGUI_IMPL_OPENGL_LOADER_CUSTOM;GLFW_INCLUDE_NONE;GLFW_DLL;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -211,7 +219,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>IMGUI_IMPL_OPENGL_LOADER_CUSTOM;GLFW_INCLUDE_NONE;GLFW_DLL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EIGEN_DONT_PARALLELIZE;EIGEN_MPL2_ONLY;IMGUI_IMPL_OPENGL_LOADER_CUSTOM;GLFW_INCLUDE_NONE;GLFW_DLL;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>

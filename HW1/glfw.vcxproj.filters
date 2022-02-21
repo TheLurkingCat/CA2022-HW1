@@ -60,24 +60,6 @@
     <ClCompile Include="$(SolutionDir)extern\glfw\src\win32_window.c">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="$(SolutionDir)extern\glfw\src\platform.c">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SolutionDir)extern\glfw\src\null_init.c">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SolutionDir)extern\glfw\src\null_joystick.c">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SolutionDir)extern\glfw\src\null_monitor.c">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SolutionDir)extern\glfw\src\null_window.c">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SolutionDir)extern\glfw\src\win32_module.c">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SolutionDir)extern\glfw\src\internal.h">
