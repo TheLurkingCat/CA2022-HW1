@@ -1,5 +1,4 @@
 #include "configs.h"
-
 float mouseMoveSpeed = 0.001f;
 float keyboardMoveSpeed = 0.1f;
 
@@ -17,3 +16,11 @@ Eigen::Vector4f clothColor = Eigen::Vector4f(0.5f, 0.0f, 0.0f, 1.0f);
 
 bool isSphereColorChange = false;
 bool isClothColorChange = false;
+bool isDrawingParticles = false;
+bool isDrawingStructuralSprings = true;
+bool isDrawingShearSprings = true;
+bool isDrawingBendSprings = false;
+bool isDrawingCloth = false;
+bool isPaused = true;
+
+int currentIntegrator = 0;

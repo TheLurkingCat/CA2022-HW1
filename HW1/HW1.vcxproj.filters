@@ -84,6 +84,9 @@
     <ClCompile Include="..\src\utils.cpp">
       <Filter>來源檔案\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\gui.cpp">
+      <Filter>來源檔案\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\glcontext.h">
@@ -126,6 +129,9 @@
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="..\include\vertexarray.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\gui.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>

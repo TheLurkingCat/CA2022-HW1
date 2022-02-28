@@ -1,7 +1,6 @@
 #include "cloth.h"
 
 #include "configs.h"
-#include "integrator.h"
 #include "sphere.h"
 
 Cloth::Cloth() : Shape(particlesPerEdge * particlesPerEdge, particleMass) {
@@ -11,17 +10,21 @@ Cloth::Cloth() : Shape(particlesPerEdge * particlesPerEdge, particleMass) {
 
 void Cloth::draw(DrawType type) const {
   vao.bind();
+  positionBuffer.load(0, 4 * particlesPerEdge * particlesPerEdge * sizeof(GLfloat), _particles.getPositionData());
   const ElementArrayBuffer* currentEBO = nullptr;
   switch (type) {
+    case DrawType::PARTICLE: [[fallthrough]];
     case DrawType::FULL: currentEBO = &ebo; break;
     case DrawType::STRUCTURAL: currentEBO = &structuralSpring; break;
     case DrawType::SHEAR: currentEBO = &shearSpring; break;
-    case DrawType::BEND: currentEBO = &bendSpring; break;
+    case DrawType::BEND: currentEBO = &bendSpring;
   }
   currentEBO->bind();
   GLsizei indexCount = static_cast<GLsizei>(currentEBO->getSize() / sizeof(GLuint));
   if (type == DrawType::FULL)
     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+  else if (type == DrawType::PARTICLE)
+    glDrawArrays(GL_POINTS, 0, particlesPerEdge * particlesPerEdge);
   else
     glDrawElements(GL_LINES, indexCount, GL_UNSIGNED_INT, nullptr);
   glBindVertexArray(0);
@@ -150,11 +153,7 @@ void Cloth::initializeSpring() {
   shearSpring.allocate_load(shearIndices.size() * sizeof(GLuint), shearIndices.data());
   bendSpring.allocate_load(bendIndices.size() * sizeof(GLuint), bendIndices.data());
 }
-
-void Cloth::update(const Integrator& integrator) {
-  // External force (Gravity)
-  _particles.acceleration().colwise() = Eigen::Vector4f(0, -9.8f, 0, 0);
-  // Internal force (Spring)
+void Cloth::computeSpringForce() {
   for (const auto& spring : springs) {
     int startID = spring.startParticleIndex();
     int endID = spring.endParticleIndex();
@@ -176,9 +175,6 @@ void Cloth::update(const Integrator& integrator) {
   _particles.acceleration(particlesPerEdge - 1).setZero();
   _particles.acceleration(particlesPerEdge * (particlesPerEdge - 1)).setZero();
   _particles.acceleration(particlesPerEdge * particlesPerEdge - 1).setZero();
-
-  integrator.integrate(_particles);
-  positionBuffer.load(0, 4 * particlesPerEdge * particlesPerEdge * sizeof(GLfloat), _particles.getPositionData());
 }
 
 void Cloth::collide(Shape* shape) { shape->collide(this); }

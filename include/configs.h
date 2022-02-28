@@ -1,5 +1,7 @@
 #pragma once
 #include <Eigen/Core>
+
+
 // constants
 inline constexpr int particlesPerEdge = 25;
 inline constexpr int clothWidth = 2;
@@ -30,3 +32,11 @@ extern Eigen::Vector4f clothColor;
 
 extern bool isSphereColorChange;
 extern bool isClothColorChange;
+extern bool isDrawingParticles;
+extern bool isDrawingStructuralSprings;
+extern bool isDrawingShearSprings;
+extern bool isDrawingBendSprings;
+extern bool isDrawingCloth;
+extern bool isPaused;
+
+extern int currentIntegrator;

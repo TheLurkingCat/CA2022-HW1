@@ -9,7 +9,7 @@ using Eigen::Vector4f;
 
 namespace {}  // namespace
 
-Camera::Camera(const Vector4f& _position) :
+Camera::Camera(const Eigen::Ref<const Eigen::Vector4f>& _position) :
     position(_position),
     up(Vector4f::UnitY()),
     front(Vector4f::UnitZ()),

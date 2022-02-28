@@ -9,10 +9,10 @@
 
 class Cloth final : public Shape {
  public:
-  enum class DrawType { FULL, STRUCTURAL, SHEAR, BEND };
+  enum class DrawType { FULL, STRUCTURAL, SHEAR, BEND, PARTICLE };
   Cloth();
   void draw(DrawType type) const;
-  void update(const Integrator& integrator) override;
+  void computeSpringForce();
   void collide(Shape* shape) override;
   void collide(Spheres* sphere) override;
 

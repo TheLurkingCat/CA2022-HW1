@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <functional>
 
 #include <GLFW/glfw3.h>
 #define GLAD_GL_IMPLEMENTATION
@@ -61,6 +62,8 @@ int main() {
   glViewport(0, 0, windowWidth, windowHeight);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glClearColor(0, 0, 0, 1);
   glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &alignSize);
 
@@ -117,7 +120,19 @@ int main() {
   cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.getPosition().data());
   cameraUBO.bindUniformBlockIndex(1, 0, uboAlign(20 * sizeof(GLfloat)));
 
+  std::function<void(void)> simulateOneStep = [&]() {
+    cloth.resetAcceleration();
+    spheres.resetAcceleration();
+    cloth.computeSpringForce();
+    spheres.collide(&cloth);
+    spheres.collide();
+  };
   ExplicitEuler explicitEuler;
+  ImplicitEuler implicitEuler;
+  MidpointEuler midpointEuler;
+  RungeKuttaFourth rk4;
+
+  Integrator* integrator = &explicitEuler;
   while (!glfwWindowShouldClose(window)) {
     // Polling events.
     glfwPollEvents();
@@ -131,24 +146,35 @@ int main() {
     if (cameraChanged) {
       cameraUBO.load(0, 16 * sizeof(GLfloat), camera.getViewProjectionMatrix().data());
       cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.getPosition().data());
+    }     
+    switch (currentIntegrator) {
+      case 0: integrator = &explicitEuler; break;
+      case 1: integrator = &implicitEuler; break;
+      case 2: integrator = &midpointEuler; break;
+      case 3: integrator = &rk4; break;
+      default: break;
     }
 
-    for (int i = 0; i < simulationPerFrame; i++) {
-      cloth.update(explicitEuler);
-      spheres.update(explicitEuler);
-      spheres.collide(&cloth);
-      spheres.collide();
+    if (!isPaused) {
+      for (int i = 0; i < simulationPerFrame; i++) {
+        simulateOneStep();
+        cloth.update(integrator, simulateOneStep);
+        spheres.update(integrator, simulateOneStep);
+      }
     }
 
     particleRenderer.use();
     if (isClothColorChange) particleRenderer.setUniform("color", clothColor);
     meshUBO.bindUniformBlockIndex(0, 0, meshOffset);
-    cloth.draw(Cloth::DrawType::STRUCTURAL);
-    cloth.draw(Cloth::DrawType::SHEAR);
-    // clothRenderer.use();
-    // glDisable(GL_CULL_FACE);
-    // cloth.draw(Cloth::DrawType::FULL);
-    // glEnable(GL_CULL_FACE);
+    if (isDrawingParticles) cloth.draw(Cloth::DrawType::PARTICLE);
+    if (isDrawingStructuralSprings) cloth.draw(Cloth::DrawType::STRUCTURAL);
+    if (isDrawingShearSprings) cloth.draw(Cloth::DrawType::SHEAR);
+    if (isDrawingBendSprings) cloth.draw(Cloth::DrawType::BEND);
+    if (isDrawingCloth) {
+      glDisable(GL_CULL_FACE);
+      cloth.draw(Cloth::DrawType::FULL);
+      glEnable(GL_CULL_FACE);
+    }
     sphereRenderer.use();
     if (isSphereColorChange) sphereRenderer.setUniform("color", sphereColor);
     meshUBO.bindUniformBlockIndex(0, meshOffset, meshOffset);

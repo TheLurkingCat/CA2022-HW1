@@ -8,7 +8,7 @@
 class Camera {
  public:
   // The w value of position should be 1
-  explicit Camera(const Eigen::Vector4f& position);
+  explicit Camera(const Eigen::Ref<const Eigen::Vector4f>& position);
 
   Eigen::Vector4f getFront() const { return front; }
   Eigen::Vector4f getPosition() const { return position; }

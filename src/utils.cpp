@@ -21,7 +21,9 @@ std::filesystem::path findAssetPath() {
 }
 }  // namespace
 
-Matrix4f lookAt(const Vector4f& position, const Vector4f& front, const Vector4f& up) {
+Matrix4f lookAt(const Eigen::Ref<const Eigen::Vector4f>& position,
+                const Eigen::Ref<const Eigen::Vector4f>& front,
+                const Eigen::Ref<const Eigen::Vector4f>& up) {
   Vector4f f = front.normalized();
   Vector4f u = up.normalized();
   Vector4f s = f.cross3(u).normalized();

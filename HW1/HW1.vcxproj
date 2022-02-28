@@ -31,6 +31,7 @@
     <ClCompile Include="..\src\cloth.cpp" />
     <ClCompile Include="..\src\configs.cpp" />
     <ClCompile Include="..\src\glcontext.cpp" />
+    <ClCompile Include="..\src\gui.cpp" />
     <ClCompile Include="..\src\integrator.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\particles.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="..\include\cloth.h" />
     <ClInclude Include="..\include\configs.h" />
     <ClInclude Include="..\include\glcontext.h" />
+    <ClInclude Include="..\include\gui.h" />
     <ClInclude Include="..\include\hw1.h" />
     <ClInclude Include="..\include\integrator.h" />
     <ClInclude Include="..\include\particles.h" />

@@ -40,6 +40,9 @@ build/
 bin/
 lib/
 
+# Config
+*.ini
+
 # Visual Studio (Code)
 .vs/
 .vscode/

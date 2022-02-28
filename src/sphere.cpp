@@ -4,7 +4,6 @@
 
 #include "cloth.h"
 #include "configs.h"
-#include "integrator.h"
 
 namespace {
 void generateVertices(std::vector<GLfloat>& vertices, std::vector<GLuint>& indices) {
@@ -60,7 +59,7 @@ Spheres& Spheres::initSpheres() {
   return spheres;
 }
 
-void Spheres::addSphere(const Eigen::Vector4f& position, float size) {
+void Spheres::addSphere(const Eigen::Ref<const Eigen::Vector4f>& position, float size) {
   bool needResize = sphereCount == _particles.getCapacity();
   if (needResize) {
     _particles.resize(sphereCount * 2);
@@ -125,11 +124,6 @@ void Spheres::draw() const {
   glBindVertexArray(0);
 }
 
-void Spheres::update(const Integrator& integrator) {
-  _particles.acceleration().colwise() = Eigen::Vector4f(0, -9.8f, 0, 0);
-  integrator.integrate(_particles);
-}
-
 void Spheres::collide(Shape* shape) { shape->collide(this); }
 void Spheres::collide(Cloth* cloth) {
   constexpr float coefRestitution = 0.0f;
@@ -147,19 +141,20 @@ void Spheres::collide(Cloth* cloth) {
       float penetration = _radius[i] - distance;
       if (penetration < 0) continue;
       normal.normalize();
-      auto normalVelocity = normal * relativeVelocity.dot(normal);
+      Eigen::Vector4f normalVelocity = normal * relativeVelocity.dot(normal);
 
       if (relativeVelocity.dot(normal) < 0) {
-        auto impulse = -(1 + coefRestitution) * normalVelocity / (inverseClothMass + inverseSphereMass);
+        Eigen::Vector4f impulse = -(1 + coefRestitution) * normalVelocity / (inverseClothMass + inverseSphereMass);
         _particles.velocity(i) += impulse * inverseSphereMass;
         cloth->particles().velocity(j) -= impulse * inverseClothMass;
       }
-      auto correction = penetration * normal * 0.6f / (inverseClothMass + inverseSphereMass);
+      Eigen::Vector4f correction = penetration * normal * 0.6f / (inverseClothMass + inverseSphereMass);
       _particles.position(i) += correction * inverseSphereMass;
       cloth->particles().position(j) -= correction * inverseClothMass;
     }
   }
 }
+
 void Spheres::collide() {
   constexpr float coefRestitution = 0.8f;
 
@@ -176,14 +171,14 @@ void Spheres::collide() {
       float penetration = (_radius[i] + _radius[j]) - distance;
       if (penetration < 0) continue;
       normal.normalize();
-      auto normalVelocity = normal * relativeVelocity.dot(normal);
+      Eigen::Vector4f normalVelocity = normal * relativeVelocity.dot(normal);
 
       if (relativeVelocity.dot(normal) < 0) {
-        auto impulse = -(1 + coefRestitution) * normalVelocity / (inverseSphere1Mass + inverseSphere2Mass);
+        Eigen::Vector4f impulse = -(1 + coefRestitution) * normalVelocity / (inverseSphere1Mass + inverseSphere2Mass);
         _particles.velocity(i) += impulse * inverseSphere1Mass;
         _particles.velocity(j) -= impulse * inverseSphere2Mass;
       }
-      auto correction = penetration * normal * 0.6f / (inverseSphere1Mass + inverseSphere2Mass);
+      Eigen::Vector4f correction = penetration * normal * 0.6f / (inverseSphere1Mass + inverseSphere2Mass);
       _particles.position(i) += correction * inverseSphere1Mass;
       _particles.position(j) -= correction * inverseSphere2Mass;
     }

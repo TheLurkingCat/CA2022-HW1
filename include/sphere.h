@@ -9,9 +9,8 @@
 class Spheres final : public Shape {
  public:
   static Spheres& initSpheres();
-  void addSphere(const Eigen::Vector4f& position, float size);
+  void addSphere(const Eigen::Ref<const Eigen::Vector4f>& position, float size);
   void draw() const;
-  void update(const Integrator& integrator) override;
   void collide(Shape* shape) override;
   void collide(Cloth* cloth) override;
   void collide() override;

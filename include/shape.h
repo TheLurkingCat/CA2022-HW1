@@ -1,5 +1,6 @@
 #pragma once
 #include <Eigen/Core>
+#include <functional>
 #include "particles.h"
 
 class Cloth;
@@ -11,11 +12,12 @@ class Shape {
   explicit Shape(int size, float mass_) noexcept;
   virtual ~Shape() = default;
 
-  void setModelMatrix(const Eigen::Matrix4f& _modelMatrix);
+  void setModelMatrix(const Eigen::Ref<const Eigen::Matrix4f>& _modelMatrix);
   Particles& particles() { return _particles; }
   Eigen::Matrix4f getModelMatrix() const { return modelMatrix; }
   Eigen::Matrix4f getNormalMatrix() const { return normalMatrix; }
-  virtual void update(const Integrator& integrator) = 0;
+  void resetAcceleration();
+  virtual void update(const Integrator* integrator, std::function<void(void)> simulateOneStep);
   virtual void collide(Shape* shape) = 0;
   virtual void collide(Cloth*) { return; }
   virtual void collide(Spheres*) { return; }

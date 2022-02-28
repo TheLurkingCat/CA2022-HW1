@@ -8,33 +8,41 @@ void renderColorPanel() {
   static bool isUsingSphereColor = false;
   static bool isUsingClothColor = false;
 
-  if (ImGui::Begin("Color config")) {
-    if (ImGui::Button("Change sphere color")) isUsingSphereColor = !isUsingSphereColor;
-    if (ImGui::Button("Change cloth color")) isUsingClothColor = !isUsingClothColor;
-
-    if (isUsingSphereColor) {
-      ImGui::SetNextWindowSize(ImVec2(300.0f, 300.0f), ImGuiCond_Once);
-      ImGui::SetNextWindowCollapsed(0, ImGuiCond_Once);
-      ImGui::SetNextWindowPos(ImVec2(50.0f, 50.0f), ImGuiCond_Once);
-      ImGui::SetNextWindowBgAlpha(1.0f);
-      if (ImGui::Begin("Sphere color")) {
-        isSphereColorChange = ImGui::ColorPicker4("Sphere Color", sphereColor.data());
-        ImGui::End();
-      }
-    }
-
-    if (isUsingClothColor) {
-      ImGui::SetNextWindowSize(ImVec2(300.0f, 300.0f), ImGuiCond_Once);
-      ImGui::SetNextWindowCollapsed(0, ImGuiCond_Once);
-      ImGui::SetNextWindowPos(ImVec2(50.0f, 50.0f), ImGuiCond_Once);
-      ImGui::SetNextWindowBgAlpha(1.0f);
-      if (ImGui::Begin("Cloth color")) {
-        isClothColorChange = ImGui::ColorPicker4("Cloth Color", clothColor.data());
-        ImGui::End();
-      }
+  if (ImGui::Button("Change sphere color")) isUsingSphereColor = !isUsingSphereColor;
+  ImGui::SameLine();
+  if (ImGui::Button("Change cloth color")) isUsingClothColor = !isUsingClothColor;
+  if (isUsingSphereColor) {
+    ImGui::SetNextWindowSize(ImVec2(300.0f, 300.0f), ImGuiCond_Once);
+    ImGui::SetNextWindowCollapsed(0, ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(50.0f, 50.0f), ImGuiCond_Once);
+    ImGui::SetNextWindowBgAlpha(1.0f);
+    if (ImGui::Begin("Sphere color", &isUsingSphereColor)) {
+      isSphereColorChange = ImGui::ColorPicker4("Sphere Color", sphereColor.data());
     }
     ImGui::End();
   }
+
+  if (isUsingClothColor) {
+    ImGui::SetNextWindowSize(ImVec2(300.0f, 300.0f), ImGuiCond_Once);
+    ImGui::SetNextWindowCollapsed(0, ImGuiCond_Once);
+    ImGui::SetNextWindowPos(ImVec2(50.0f, 50.0f), ImGuiCond_Once);
+    ImGui::SetNextWindowBgAlpha(1.0f);
+    if (ImGui::Begin("Cloth color", &isUsingClothColor)) {
+      isClothColorChange = ImGui::ColorPicker4("Cloth Color", clothColor.data());
+    }
+    ImGui::End();
+  }
+}
+void renderDrawingTypes() {
+  ImGui::Checkbox("Particles", &isDrawingParticles);
+  ImGui::SameLine();
+  ImGui::Checkbox("Structural", &isDrawingStructuralSprings);
+  ImGui::SameLine();
+  ImGui::Checkbox("Shear", &isDrawingShearSprings);
+  ImGui::SameLine();
+  ImGui::Checkbox("Bend", &isDrawingBendSprings);
+  ImGui::SameLine();
+  ImGui::Checkbox("Surface", &isDrawingCloth);
 }
 }  // namespace
 
@@ -65,8 +73,7 @@ void GUI::render() {
 }
 
 void GUI::renderMainPanel() {
-  static bool isUsingColorPanel = false;
-  ImGui::SetNextWindowSize(ImVec2(400.0f, 275.0f), ImGuiCond_Once);
+  ImGui::SetNextWindowSize(ImVec2(450.0f, 300.0f), ImGuiCond_Once);
   ImGui::SetNextWindowCollapsed(0, ImGuiCond_Once);
   ImGui::SetNextWindowPos(ImVec2(50.0f, 50.0f), ImGuiCond_Once);
   ImGui::SetNextWindowBgAlpha(0.2f);
@@ -87,11 +94,21 @@ void GUI::renderMainPanel() {
     if (ImGui::InputFloat("damperCoef", &damperCoef, 1.0f, 1e2f, "%.0f")) {
       damperCoef = std::max(0.0f, damperCoef);
     }
-    if (ImGui::Button("Color Configs")) {
-      isUsingColorPanel = !isUsingColorPanel;
-    }
-    if (isUsingColorPanel) renderColorPanel();
+
+    ImGui::Text("%s", "---------------------- Integrator ----------------------");
+    ImGui::RadioButton("Explicit Euler", &currentIntegrator, 0);
+    ImGui::SameLine();
+    ImGui::RadioButton("Implicit Euler", &currentIntegrator, 1);
+    ImGui::RadioButton("Midpoint Euler", &currentIntegrator, 2);
+    ImGui::SameLine();
+    ImGui::RadioButton("Runge Kutta Fourth", &currentIntegrator, 3);
+
+    ImGui::Text("%s", "-------------------- Drawing Config --------------------");
+    renderColorPanel();
+    renderDrawingTypes();
+    ImGui::Text("%s", "-------------------- Miscellaneous ---------------------");
+    if (ImGui::Button(isPaused ? "Play" : "Pause")) isPaused = !isPaused;
     ImGui::Text("Current framerate: %.0f", ImGui::GetIO().Framerate);
-    ImGui::End();
   }
+  ImGui::End();
 }
