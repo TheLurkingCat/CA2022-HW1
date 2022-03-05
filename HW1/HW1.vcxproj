@@ -161,6 +161,9 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4819;4551</DisableSpecificWarnings>
+      <Optimization>MaxSpeed</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -208,6 +211,9 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <CompileAs>Default</CompileAs>
       <DisableSpecificWarnings>4819;4551</DisableSpecificWarnings>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
