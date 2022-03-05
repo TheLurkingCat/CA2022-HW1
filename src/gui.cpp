@@ -73,7 +73,7 @@ void GUI::render() {
 }
 
 void GUI::renderMainPanel() {
-  ImGui::SetNextWindowSize(ImVec2(450.0f, 300.0f), ImGuiCond_Once);
+  ImGui::SetNextWindowSize(ImVec2(450.0f, 350.0f), ImGuiCond_Once);
   ImGui::SetNextWindowCollapsed(0, ImGuiCond_Once);
   ImGui::SetNextWindowPos(ImVec2(50.0f, 50.0f), ImGuiCond_Once);
   ImGui::SetNextWindowBgAlpha(0.2f);
@@ -84,9 +84,10 @@ void GUI::renderMainPanel() {
     if (ImGui::InputFloat("keyboardMoveSpeed", &keyboardMoveSpeed, 1e-2f, 1e-1f, "%.2f")) {
       keyboardMoveSpeed = std::max(0.0f, keyboardMoveSpeed);
     }
-    if (ImGui::InputFloat("deltaTime", &deltaTime, 1e-6f, 1e-5f, "%.6f")) {
+    if (ImGui::InputFloat("deltaTime", &deltaTime, 1e-4f, 1e-5f, "%.5f")) {
       deltaTime = std::max(0.0f, deltaTime);
-      simulationPerFrame = static_cast<int>(baseSpeed / deltaTime);
+      simulationPerFrame = speedMultiplier * static_cast<int>(baseSpeed / deltaTime);
+      simulationPerFrame = std::max(1, simulationPerFrame);
     }
     if (ImGui::InputFloat("springCoef", &springCoef, 1e2f, 1e3f, "%.0f")) {
       springCoef = std::max(0.0f, springCoef);
@@ -107,7 +108,7 @@ void GUI::renderMainPanel() {
     renderColorPanel();
     renderDrawingTypes();
     ImGui::Text("%s", "-------------------- Miscellaneous ---------------------");
-    if (ImGui::Button(isPaused ? "Play" : "Pause")) isPaused = !isPaused;
+    if (isStateSwitched = ImGui::Button(isPaused ? "Start" : "Stop")) isPaused = !isPaused;
     ImGui::Text("Current framerate: %.0f", ImGui::GetIO().Framerate);
   }
   ImGui::End();

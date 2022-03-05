@@ -1,11 +1,11 @@
 #include <algorithm>
 #include <cassert>
+#include <functional>
 #include <iostream>
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
-#include <functional>
 
 #include <GLFW/glfw3.h>
 #define GLAD_GL_IMPLEMENTATION
@@ -56,8 +56,7 @@ int main() {
   context.printSystemInfo();
   context.enableDebugCallback();
 #endif
-  GUI gui(window, context.getOpenGLVersion());
-
+  glfwSwapInterval(1);
   glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
   glViewport(0, 0, windowWidth, windowHeight);
   glEnable(GL_DEPTH_TEST);
@@ -67,6 +66,9 @@ int main() {
   glClearColor(0, 0, 0, 1);
   glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &alignSize);
 
+  speedMultiplier = (240 / context.getRefreshRate());
+  simulationPerFrame *= speedMultiplier;
+  GUI gui(window, context.getOpenGLVersion());
   ShaderProgram sphereRenderer, particleRenderer;
   {
     VertexShader vs;
@@ -97,6 +99,7 @@ int main() {
   }
 
   Cloth cloth;
+  cloth.computeNormal();
   UniformBuffer meshUBO;
   int meshOffset = uboAlign(32 * sizeof(GLfloat));
   meshUBO.allocate(2 * meshOffset);
@@ -105,11 +108,10 @@ int main() {
 
   Spheres& spheres = Spheres::initSpheres();
 
-  spheres.addSphere(Eigen::Vector4f(-0.75, 2, -0.75, 1), 0.5f);
-  spheres.addSphere(Eigen::Vector4f(0.75, 2, -0.75, 1), 0.5f);
-  spheres.addSphere(Eigen::Vector4f(-0.75, 2, 0.75, 1), 0.5f);
-  spheres.addSphere(Eigen::Vector4f(0.75, 2, 0.75, 1), 0.5f);
-  spheres.addSphere(Eigen::Vector4f(0, 4, 0, 1), 0.5f);
+  spheres.addSphere(Eigen::Vector4f(-0.75, 1, -0.75, 1), 0.5f);
+  spheres.addSphere(Eigen::Vector4f(0.75, 1, -0.75, 1), 0.5f);
+  spheres.addSphere(Eigen::Vector4f(-0.75, 1, 0.75, 1), 0.5f);
+  spheres.addSphere(Eigen::Vector4f(0.75, 1, 0.75, 1), 0.5f);
   meshUBO.load(meshOffset, 16 * sizeof(GLfloat), spheres.getModelMatrix().data());
   meshUBO.load(meshOffset + 16 * sizeof(GLfloat), 16 * sizeof(GLfloat), spheres.getNormalMatrix().data());
 
@@ -121,18 +123,22 @@ int main() {
   cameraUBO.bindUniformBlockIndex(1, 0, uboAlign(20 * sizeof(GLfloat)));
 
   std::function<void(void)> simulateOneStep = [&]() {
-    cloth.resetAcceleration();
-    spheres.resetAcceleration();
+    cloth.computeExternalForce();
+    spheres.computeExternalForce();
     cloth.computeSpringForce();
     spheres.collide(&cloth);
     spheres.collide();
   };
+
   ExplicitEuler explicitEuler;
   ImplicitEuler implicitEuler;
   MidpointEuler midpointEuler;
   RungeKuttaFourth rk4;
-
   Integrator* integrator = &explicitEuler;
+
+  std::vector<Particles*> particles{&cloth.particles(), &spheres.particles()};
+  Particles initialCloth = cloth.particles();
+  Particles initialSpheres = spheres.particles();
   while (!glfwWindowShouldClose(window)) {
     // Polling events.
     glfwPollEvents();
@@ -146,7 +152,7 @@ int main() {
     if (cameraChanged) {
       cameraUBO.load(0, 16 * sizeof(GLfloat), camera.getViewProjectionMatrix().data());
       cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.getPosition().data());
-    }     
+    }
     switch (currentIntegrator) {
       case 0: integrator = &explicitEuler; break;
       case 1: integrator = &implicitEuler; break;
@@ -156,10 +162,13 @@ int main() {
     }
 
     if (!isPaused) {
+      if (isStateSwitched) {
+        cloth.particles() = initialCloth;
+        spheres.particles() = initialSpheres;
+      }
       for (int i = 0; i < simulationPerFrame; i++) {
         simulateOneStep();
-        cloth.update(integrator, simulateOneStep);
-        spheres.update(integrator, simulateOneStep);
+        integrator->integrate(particles, simulateOneStep);
       }
     }
 
@@ -172,8 +181,12 @@ int main() {
     if (isDrawingBendSprings) cloth.draw(Cloth::DrawType::BEND);
     if (isDrawingCloth) {
       glDisable(GL_CULL_FACE);
+      cloth.computeNormal();
+      particleRenderer.setUniform("isSurface", 1);
       cloth.draw(Cloth::DrawType::FULL);
       glEnable(GL_CULL_FACE);
+    } else {
+      particleRenderer.setUniform("isSurface", 0);
     }
     sphereRenderer.use();
     if (isSphereColorChange) sphereRenderer.setUniform("color", sphereColor);

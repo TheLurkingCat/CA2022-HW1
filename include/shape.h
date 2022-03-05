@@ -16,8 +16,7 @@ class Shape {
   Particles& particles() { return _particles; }
   Eigen::Matrix4f getModelMatrix() const { return modelMatrix; }
   Eigen::Matrix4f getNormalMatrix() const { return normalMatrix; }
-  void resetAcceleration();
-  virtual void update(const Integrator* integrator, std::function<void(void)> simulateOneStep);
+  void computeExternalForce();
   virtual void collide(Shape* shape) = 0;
   virtual void collide(Cloth*) { return; }
   virtual void collide(Spheres*) { return; }

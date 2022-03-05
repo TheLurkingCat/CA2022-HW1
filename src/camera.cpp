@@ -7,8 +7,6 @@ using Eigen::Matrix4f;
 using Eigen::Vector3f;
 using Eigen::Vector4f;
 
-namespace {}  // namespace
-
 Camera::Camera(const Eigen::Ref<const Eigen::Vector4f>& _position) :
     position(_position),
     up(Vector4f::UnitY()),

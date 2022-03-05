@@ -4,10 +4,12 @@
 
 #include "buffer.h"
 #include "shape.h"
+#include "utils.h"
 #include "vertexarray.h"
 
 class Spheres final : public Shape {
  public:
+  MOVE_ONLY(Spheres)
   static Spheres& initSpheres();
   void addSphere(const Eigen::Ref<const Eigen::Vector4f>& position, float size);
   void draw() const;

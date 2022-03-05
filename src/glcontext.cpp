@@ -122,7 +122,7 @@ OpenGLContext& OpenGLContext::getContext() {
   return context;
 }
 
-void OpenGLContext::printSystemInfo() {
+void OpenGLContext::printSystemInfo() const {
   std::cout << std::left << std::setw(26) << "Current OpenGL renderer"
             << ": " << glGetString(GL_RENDERER) << std::endl;
   std::cout << std::left << std::setw(26) << "Current OpenGL context"

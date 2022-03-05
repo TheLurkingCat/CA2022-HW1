@@ -18,10 +18,12 @@ class OpenGLContext final {
   static OpenGLContext& getContext();
   /// @return Current window handle.
   GLFWwindow* createWindow(const char* name, int width, int height, GLenum profile);
+  /// @return The monitor refresh rate.
+  int getRefreshRate() const { return refreshRate; }
   /// @return The OpenGL context version.
-  int getOpenGLVersion() { return majorVersion * 10 + minorVersion; }
+  int getOpenGLVersion() const { return majorVersion * 10 + minorVersion; }
   /// @brief Enable OpenGL's debug callback
-  void printSystemInfo();
+  void printSystemInfo() const;
   /// @brief Enable OpenGL's debug callback, useful for debugging.
   void enableDebugCallback();
 

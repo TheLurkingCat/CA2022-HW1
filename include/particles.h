@@ -19,6 +19,7 @@ class Particles {
   Eigen::Ref<Eigen::Vector4f> velocity(int i) { return _velocity.col(i); }
   Eigen::Ref<Eigen::Vector4f> acceleration(int i) { return _acceleration.col(i); }
   float& mass(int i) { return _mass[i]; }
+  float inverseMass(int i) { return (_mass[i] == 0.0f) ? 0.0f : 1.0f / _mass[i]; }
 
   const float* getPositionData() const { return _position.data(); }
   const float* getVelocityData() const { return _velocity.data(); }

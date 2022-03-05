@@ -38,12 +38,9 @@ void Cloth::initializeVertex() {
   float hTexStep = 1.0f / (particlesPerEdge - 1);
 
   int current = 0;
-  std::vector<GLfloat> texCoord;
   for (int i = 0; i < particlesPerEdge; ++i) {
     for (int j = 0; j < particlesPerEdge; ++j) {
-      _particles.mass(current) = 1.0f;
       _particles.position(current++) = Eigen::Vector4f(-clothWidth + j * wStep, 0, -clothHeight + i * hStep, 1);
-      texCoord.insert(texCoord.end(), {j * wTexStep, 1 - i * hTexStep});
     }
   }
   // Four corners will not move
@@ -68,17 +65,18 @@ void Cloth::initializeVertex() {
   }
 
   int vboSize = particlesPerEdge * particlesPerEdge * sizeof(GLfloat);
-  texCoordsBuffer.allocate_load(vboSize * 2, texCoord.data());
   positionBuffer.allocate_load(vboSize * 4, _particles.getPositionData());
+  normalBuffer.allocate(particlesPerEdge * particlesPerEdge * sizeof(float) * 4);
+
   ebo.allocate_load(indices.size() * sizeof(GLuint), indices.data());
 
   vao.bind();
   positionBuffer.bind();
   vao.enable(0);
   vao.setAttributePointer(0, 4, 4, 0);
-  texCoordsBuffer.bind();
+  normalBuffer.bind();
   vao.enable(1);
-  vao.setAttributePointer(1, 2, 2, 0);
+  vao.setAttributePointer(1, 4, 4, 0);
 
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -94,13 +92,13 @@ void Cloth::initializeSpring() {
   for (int i = 0; i < particlesPerEdge; ++i) {
     for (int j = 0; j < particlesPerEdge - 1; ++j) {
       int index = i * particlesPerEdge + j;
-      springs.emplace_back(index, index + 1, structrualLength, Spring::Type::STRUCTURAL);
+      _springs.emplace_back(index, index + 1, structrualLength, Spring::Type::STRUCTURAL);
     }
   }
   for (int i = 0; i < particlesPerEdge - 1; ++i) {
     for (int j = 0; j < particlesPerEdge; ++j) {
       int index = i * particlesPerEdge + j;
-      springs.emplace_back(index, index + particlesPerEdge, structrualLength, Spring::Type::STRUCTURAL);
+      _springs.emplace_back(index, index + particlesPerEdge, structrualLength, Spring::Type::STRUCTURAL);
     }
   }
   // Shear
@@ -108,13 +106,13 @@ void Cloth::initializeSpring() {
   for (int i = 0; i < particlesPerEdge - 1; ++i) {
     for (int j = 0; j < particlesPerEdge - 1; ++j) {
       int index = i * particlesPerEdge + j;
-      springs.emplace_back(index, index + particlesPerEdge + 1, shearLength, Spring::Type::SHEAR);
+      _springs.emplace_back(index, index + particlesPerEdge + 1, shearLength, Spring::Type::SHEAR);
     }
   }
   for (int i = 0; i < particlesPerEdge - 1; ++i) {
     for (int j = 1; j < particlesPerEdge; ++j) {
       int index = i * particlesPerEdge + j;
-      springs.emplace_back(index, index + particlesPerEdge - 1, shearLength, Spring::Type::SHEAR);
+      _springs.emplace_back(index, index + particlesPerEdge - 1, shearLength, Spring::Type::SHEAR);
     }
   }
   // Bend
@@ -122,18 +120,18 @@ void Cloth::initializeSpring() {
   for (int i = 0; i < particlesPerEdge; ++i) {
     for (int j = 0; j < particlesPerEdge - 2; ++j) {
       int index = i * particlesPerEdge + j;
-      springs.emplace_back(index, index + 2, bendLength, Spring::Type::BEND);
+      _springs.emplace_back(index, index + 2, bendLength, Spring::Type::BEND);
     }
   }
   for (int i = 0; i < particlesPerEdge - 2; ++i) {
     for (int j = 0; j < particlesPerEdge; ++j) {
       int index = i * particlesPerEdge + j;
-      springs.emplace_back(index, index + 2 * particlesPerEdge, bendLength, Spring::Type::BEND);
+      _springs.emplace_back(index, index + 2 * particlesPerEdge, bendLength, Spring::Type::BEND);
     }
   }
 
   std::vector<GLuint> structrualIndices, shearIndices, bendIndices;
-  for (const auto& spring : springs) {
+  for (const auto& spring : _springs) {
     switch (spring.type()) {
       case Spring::Type::STRUCTURAL:
         structrualIndices.emplace_back(spring.startParticleIndex());
@@ -154,7 +152,7 @@ void Cloth::initializeSpring() {
   bendSpring.allocate_load(bendIndices.size() * sizeof(GLuint), bendIndices.data());
 }
 void Cloth::computeSpringForce() {
-  for (const auto& spring : springs) {
+  for (const auto& spring : _springs) {
     int startID = spring.startParticleIndex();
     int endID = spring.endParticleIndex();
     Eigen::Vector4f direction = _particles.position(startID) - _particles.position(endID);
@@ -167,15 +165,36 @@ void Cloth::computeSpringForce() {
     float deltaVelocity = relativeVelocity.dot(direction);
     Eigen::Vector4f internalForce = direction * (damperCoef * deltaVelocity + springCoef * deltaLength);
 
-    if (_particles.mass(startID) != 0) _particles.acceleration(startID) -= internalForce / _particles.mass(startID);
-    if (_particles.mass(endID) != 0) _particles.acceleration(endID) += internalForce / _particles.mass(endID);
+    _particles.acceleration(startID) -= internalForce * _particles.inverseMass(startID);
+    _particles.acceleration(endID) += internalForce * _particles.inverseMass(endID);
   }
-  // Four edge will not move.
-  _particles.acceleration(0).setZero();
-  _particles.acceleration(particlesPerEdge - 1).setZero();
-  _particles.acceleration(particlesPerEdge * (particlesPerEdge - 1)).setZero();
-  _particles.acceleration(particlesPerEdge * particlesPerEdge - 1).setZero();
 }
 
 void Cloth::collide(Shape* shape) { shape->collide(this); }
 void Cloth::collide(Spheres* sphere) { sphere->collide(this); }
+
+void Cloth::computeNormal() {
+  static Eigen::Matrix<float, 4, particlesPerEdge * particlesPerEdge> normals;
+  normals.setZero();
+  for (int i = 0; i < particlesPerEdge - 1; ++i) {
+    int offset = i * (particlesPerEdge);
+    for (int j = 0; j < particlesPerEdge - 1; ++j) {
+      Eigen::Vector4f v1 = _particles.position(offset + j) - _particles.position(offset + j + particlesPerEdge);
+      Eigen::Vector4f v2 = _particles.position(offset + j + 1) - _particles.position(offset + j + particlesPerEdge);
+      Eigen::Vector4f n1 = v2.cross3(v1);
+      normals.col(offset + j) += n1;
+      normals.col(offset + j + 1) += n1;
+      normals.col(offset + j + particlesPerEdge) += n1;
+
+      Eigen::Vector4f v3 = _particles.position(offset + j + 1) - _particles.position(offset + j + particlesPerEdge);
+      Eigen::Vector4f v4 =
+          _particles.position(offset + j + particlesPerEdge + 1) - _particles.position(offset + j + particlesPerEdge);
+      Eigen::Vector4f n2 = v4.cross3(v2);
+      normals.col(offset + j + 1) += n2;
+      normals.col(offset + j + particlesPerEdge) += n2;
+      normals.col(offset + j + particlesPerEdge + 1) += n2;
+    }
+  }
+  normals.colwise().normalize();
+  normalBuffer.load(0, particlesPerEdge * particlesPerEdge * sizeof(float) * 4, normals.data());
+}

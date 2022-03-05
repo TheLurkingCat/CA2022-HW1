@@ -8,7 +8,6 @@ set(HW1_SOURCE
   ${HW1_SOURCE_DIR}/glcontext.cpp
   ${HW1_SOURCE_DIR}/gui.cpp
   ${HW1_SOURCE_DIR}/integrator.cpp
-  ${HW1_SOURCE_DIR}/main.cpp
   ${HW1_SOURCE_DIR}/particles.cpp
   ${HW1_SOURCE_DIR}/shader.cpp
   ${HW1_SOURCE_DIR}/shape.cpp
@@ -19,7 +18,7 @@ set(HW1_SOURCE
 
 set(HW1_INCLUDE_DIR ${HW1_SOURCE_DIR}/../include)
 
-add_executable(HW1 ${HW1_SOURCE})
+add_executable(HW1 ${HW1_SOURCE} ${HW1_SOURCE_DIR}/main.cpp)
 target_include_directories(HW1 PRIVATE ${HW1_INCLUDE_DIR})
 
 add_dependencies(HW1 glad glfw eigen)
