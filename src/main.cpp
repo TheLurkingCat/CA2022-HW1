@@ -73,8 +73,8 @@ int main() {
   {
     VertexShader vs;
     FragmentShader fs;
-    vs.fromFile(findPath("simple/sphere.vert"));
-    fs.fromFile(findPath("simple/sphere.frag"));
+    vs.fromFile(findPath("sphere.vert"));
+    fs.fromFile(findPath("sphere.frag"));
     sphereRenderer.attach(&vs, &fs);
     sphereRenderer.link();
     sphereRenderer.detach(&vs, &fs);
@@ -86,8 +86,8 @@ int main() {
   {
     VertexShader vs;
     FragmentShader fs;
-    vs.fromFile(findPath("simple/particle.vert"));
-    fs.fromFile(findPath("simple/particle.frag"));
+    vs.fromFile(findPath("particle.vert"));
+    fs.fromFile(findPath("particle.frag"));
     particleRenderer.attach(&vs, &fs);
     particleRenderer.link();
     particleRenderer.detach(&vs, &fs);
