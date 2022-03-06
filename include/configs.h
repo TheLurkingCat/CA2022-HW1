@@ -2,11 +2,11 @@
 #include <Eigen/Core>
 
 // constants
-inline constexpr int particlesPerEdge = 50;
+inline constexpr int particlesPerEdge = 25;
 inline constexpr int clothWidth = 2;
 inline constexpr int clothHeight = 2;
-inline constexpr float particleMass = (clothWidth * clothHeight) * 100.0f / (particlesPerEdge * particlesPerEdge);
-inline constexpr float sphereDensity = 1000.0f;
+inline constexpr float particleMass = 1.0f;
+inline constexpr float sphereDensity = 1e3f;
 inline constexpr float baseSpeed = 1e-3f;
 
 inline constexpr int sphereSlice = 36;

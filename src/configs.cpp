@@ -10,7 +10,7 @@ float deltaTime = 1e-4f;
 int simulationPerFrame = static_cast<int>(baseSpeed / deltaTime);
 
 float springCoef = 25000.0f;
-float damperCoef = 250.0f;
+float damperCoef = 750.0f;
 float viscousCoef = 3.4e-4f;
 
 Eigen::Vector4f sphereColor = Eigen::Vector4f(0.28f, 0.65f, 0.8f, 1.0f);
