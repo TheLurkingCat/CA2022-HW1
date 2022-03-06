@@ -56,6 +56,7 @@ int main() {
   context.printSystemInfo();
   context.enableDebugCallback();
 #endif
+
   glfwSwapInterval(1);
   glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
   glViewport(0, 0, windowWidth, windowHeight);
@@ -69,6 +70,7 @@ int main() {
   speedMultiplier = (240 / context.getRefreshRate());
   simulationPerFrame *= speedMultiplier;
   GUI gui(window, context.getOpenGLVersion());
+  // Initialize shaders
   ShaderProgram sphereRenderer, particleRenderer;
   {
     VertexShader vs;
@@ -97,7 +99,7 @@ int main() {
     particleRenderer.uniformBlockBinding("model", 0);
     particleRenderer.uniformBlockBinding("camera", 1);
   }
-
+  // Create softbody
   Cloth cloth;
   cloth.computeNormal();
   UniformBuffer meshUBO;
@@ -107,7 +109,6 @@ int main() {
   meshUBO.load(16 * sizeof(GLfloat), 16 * sizeof(GLfloat), cloth.getNormalMatrix().data());
 
   Spheres& spheres = Spheres::initSpheres();
-
   spheres.addSphere(Eigen::Vector4f(-0.75, 1, -0.75, 1), 0.5f);
   spheres.addSphere(Eigen::Vector4f(0.75, 1, -0.75, 1), 0.5f);
   spheres.addSphere(Eigen::Vector4f(-0.75, 1, 0.75, 1), 0.5f);
@@ -121,7 +122,7 @@ int main() {
   cameraUBO.load(0, 16 * sizeof(GLfloat), camera.getViewProjectionMatrix().data());
   cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.getPosition().data());
   cameraUBO.bindUniformBlockIndex(1, 0, uboAlign(20 * sizeof(GLfloat)));
-
+  // Do one step simulation, used in some implicit methods
   std::function<void(void)> simulateOneStep = [&]() {
     cloth.computeExternalForce();
     spheres.computeExternalForce();
@@ -137,8 +138,10 @@ int main() {
   Integrator* integrator = &explicitEuler;
 
   std::vector<Particles*> particles{&cloth.particles(), &spheres.particles()};
+  // Backup initial state
   Particles initialCloth = cloth.particles();
   Particles initialSpheres = spheres.particles();
+
   while (!glfwWindowShouldClose(window)) {
     // Polling events.
     glfwPollEvents();
@@ -153,6 +156,7 @@ int main() {
       cameraUBO.load(0, 16 * sizeof(GLfloat), camera.getViewProjectionMatrix().data());
       cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.getPosition().data());
     }
+    // Check which integrator is selected in GUI.
     switch (currentIntegrator) {
       case 0: integrator = &explicitEuler; break;
       case 1: integrator = &implicitEuler; break;
@@ -162,10 +166,12 @@ int main() {
     }
 
     if (!isPaused) {
+      // Stop -> Start: Restore initial state
       if (isStateSwitched) {
         cloth.particles() = initialCloth;
         spheres.particles() = initialSpheres;
       }
+      // Simulate one step and then integrate it.
       for (int i = 0; i < simulationPerFrame; i++) {
         simulateOneStep();
         integrator->integrate(particles, simulateOneStep);
@@ -181,6 +187,7 @@ int main() {
     if (isDrawingBendSprings) cloth.draw(Cloth::DrawType::BEND);
     if (isDrawingCloth) {
       glDisable(GL_CULL_FACE);
+      // This is very slow because it is done in CPU. Since GL4.1 doesn't support compute shader.
       cloth.computeNormal();
       particleRenderer.setUniform("isSurface", 1);
       cloth.draw(Cloth::DrawType::FULL);

@@ -1,36 +1,36 @@
 #include "buffer.h"
 
-Buffer::Buffer() noexcept : handle(0), size(0) { glGenBuffers(1, &handle); }
+Buffer::Buffer() noexcept : _handle(0), _size(0) { glGenBuffers(1, &_handle); }
 
-Buffer::~Buffer() { glDeleteBuffers(1, &handle); }
+Buffer::~Buffer() { glDeleteBuffers(1, &_handle); }
 
-void Buffer::bind() const noexcept { glBindBuffer(getType(), handle); }
+void Buffer::bind() const noexcept { glBindBuffer(getType(), _handle); }
 
-void Buffer::allocate(GLsizeiptr _size, GLenum usage) const noexcept {
+void Buffer::allocate(GLsizeiptr size_, GLenum usage) const noexcept {
   bind();
-  size = _size;
-  glBufferData(getType(), size, nullptr, usage);
+  _size = size_;
+  glBufferData(getType(), _size, nullptr, usage);
 }
 
-void Buffer::load(GLintptr offset, GLsizeiptr _size, const void* data) const noexcept {
+void Buffer::load(GLintptr offset, GLsizeiptr size_, const void* data) const noexcept {
   bind();
-  glBufferSubData(getType(), offset, _size, data);
+  glBufferSubData(getType(), offset, size_, data);
 }
 
-void Buffer::allocate_load(GLsizeiptr _size, const void* data, GLenum usage) const noexcept {
+void Buffer::allocate_load(GLsizeiptr size_, const void* data, GLenum usage) const noexcept {
   bind();
-  size = _size;
-  glBufferData(getType(), size, data, usage);
+  _size = size_;
+  glBufferData(getType(), _size, data, usage);
 }
 
-void UniformBuffer::bindUniformBlockIndex(GLuint index, GLuint offset, GLuint _size) const noexcept {
+void UniformBuffer::bindUniformBlockIndex(GLuint index, GLuint offset, GLuint size_) const noexcept {
   bind();
-  glBindBufferRange(GL_UNIFORM_BUFFER, index, handle, offset, _size);
+  glBindBufferRange(GL_UNIFORM_BUFFER, index, _handle, offset, size_);
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void UniformBuffer::bindUniformBlockIndex(GLuint index) const noexcept {
   bind();
-  glBindBufferBase(GL_UNIFORM_BUFFER, index, handle);
+  glBindBufferBase(GL_UNIFORM_BUFFER, index, _handle);
   glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

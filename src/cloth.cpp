@@ -20,7 +20,7 @@ void Cloth::draw(DrawType type) const {
     case DrawType::BEND: currentEBO = &bendSpring;
   }
   currentEBO->bind();
-  GLsizei indexCount = static_cast<GLsizei>(currentEBO->getSize() / sizeof(GLuint));
+  GLsizei indexCount = static_cast<GLsizei>(currentEBO->size() / sizeof(GLuint));
   if (type == DrawType::FULL)
     glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
   else if (type == DrawType::PARTICLE)

@@ -108,7 +108,7 @@ Spheres::Spheres() : Shape(1, 1), sphereCount(0), _radius(1, 0.0f) {
 void Spheres::draw() const {
   vao.bind();
   offsets.load(0, 4 * sphereCount * sizeof(GLfloat), _particles.getPositionData());
-  GLsizei indexCount = static_cast<GLsizei>(ebo.getSize() / sizeof(GLuint));
+  GLsizei indexCount = static_cast<GLsizei>(ebo.size() / sizeof(GLuint));
   glDrawElementsInstanced(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr, sphereCount);
   glBindVertexArray(0);
 }
