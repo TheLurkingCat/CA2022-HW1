@@ -108,7 +108,7 @@ void GUI::renderMainPanel() {
     renderColorPanel();
     renderDrawingTypes();
     ImGui::Text("%s", "-------------------- Miscellaneous ---------------------");
-    if (isStateSwitched = ImGui::Button(isPaused ? "Start" : "Stop")) isPaused = !isPaused;
+    if ((isStateSwitched = ImGui::Button(isPaused ? "Start" : "Stop"))) isPaused = !isPaused;
     ImGui::Text("Current framerate: %.0f", ImGui::GetIO().Framerate);
   }
   ImGui::End();

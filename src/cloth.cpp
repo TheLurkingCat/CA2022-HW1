@@ -1,4 +1,5 @@
 #include "cloth.h"
+#include <Eigen/Geometry>
 
 #include "configs.h"
 #include "sphere.h"
@@ -34,8 +35,6 @@ void Cloth::draw(DrawType type) const {
 void Cloth::initializeVertex() {
   float wStep = 2.0f * clothWidth / (particlesPerEdge - 1);
   float hStep = 2.0f * clothHeight / (particlesPerEdge - 1);
-  float wTexStep = 1.0f / (particlesPerEdge - 1);
-  float hTexStep = 1.0f / (particlesPerEdge - 1);
 
   int current = 0;
   for (int i = 0; i < particlesPerEdge; ++i) {
@@ -186,10 +185,9 @@ void Cloth::computeNormal() {
       normals.col(offset + j + 1) += n1;
       normals.col(offset + j + particlesPerEdge) += n1;
 
-      Eigen::Vector4f v3 = _particles.position(offset + j + 1) - _particles.position(offset + j + particlesPerEdge);
-      Eigen::Vector4f v4 =
+      Eigen::Vector4f v3 =
           _particles.position(offset + j + particlesPerEdge + 1) - _particles.position(offset + j + particlesPerEdge);
-      Eigen::Vector4f n2 = v4.cross3(v2);
+      Eigen::Vector4f n2 = v3.cross3(v2);
       normals.col(offset + j + 1) += n2;
       normals.col(offset + j + particlesPerEdge) += n2;
       normals.col(offset + j + particlesPerEdge + 1) += n2;

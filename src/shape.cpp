@@ -15,7 +15,7 @@ void Shape::setModelMatrix(const Eigen::Ref<const Eigen::Matrix4f>& _modelMatrix
 }
 
 void Shape::computeExternalForce() {
-  for (int i = 0; i < _particles.mass().size(); ++i) {
+  for (size_t i = 0; i < _particles.mass().size(); ++i) {
     if (_particles.mass(i) == 0.0f) {
       _particles.acceleration(i).setZero();
     } else {
