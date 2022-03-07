@@ -33,6 +33,7 @@ void renderColorPanel() {
     ImGui::End();
   }
 }
+
 void renderDrawingTypes() {
   ImGui::Checkbox("Particles", &isDrawingParticles);
   ImGui::SameLine();
@@ -44,35 +45,8 @@ void renderDrawingTypes() {
   ImGui::SameLine();
   ImGui::Checkbox("Surface", &isDrawingCloth);
 }
-}  // namespace
 
-GUI::GUI(GLFWwindow* window, int version) {
-  ImGui::CreateContext();
-  ImGui::StyleColorsDark();
-  ImGui_ImplGlfw_InitForOpenGL(window, true);
-  if (version >= 41) {
-    ImGui_ImplOpenGL3_Init("#version 410 core");
-  } else {
-    ImGui_ImplOpenGL3_Init(nullptr);
-  }
-}
-
-GUI::~GUI() {
-  ImGui_ImplOpenGL3_Shutdown();
-  ImGui_ImplGlfw_Shutdown();
-  ImGui::DestroyContext();
-}
-
-void GUI::render() {
-  ImGui_ImplOpenGL3_NewFrame();
-  ImGui_ImplGlfw_NewFrame();
-  ImGui::NewFrame();
-  renderMainPanel();
-  ImGui::Render();
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-void GUI::renderMainPanel() {
+void renderMainPanel() {
   ImGui::SetNextWindowSize(ImVec2(450.0f, 350.0f), ImGuiCond_Once);
   ImGui::SetNextWindowCollapsed(0, ImGuiCond_Once);
   ImGui::SetNextWindowPos(ImVec2(50.0f, 50.0f), ImGuiCond_Once);
@@ -112,4 +86,31 @@ void GUI::renderMainPanel() {
     ImGui::Text("Current framerate: %.0f", ImGui::GetIO().Framerate);
   }
   ImGui::End();
+}
+}  // namespace
+
+GUI::GUI(GLFWwindow* window, int version) {
+  ImGui::CreateContext();
+  ImGui::StyleColorsDark();
+  ImGui_ImplGlfw_InitForOpenGL(window, true);
+  if (version >= 41) {
+    ImGui_ImplOpenGL3_Init("#version 410 core");
+  } else {
+    ImGui_ImplOpenGL3_Init(nullptr);
+  }
+}
+
+GUI::~GUI() {
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
+}
+
+void GUI::render() {
+  ImGui_ImplOpenGL3_NewFrame();
+  ImGui_ImplGlfw_NewFrame();
+  ImGui::NewFrame();
+  renderMainPanel();
+  ImGui::Render();
+  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }

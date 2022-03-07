@@ -10,8 +10,9 @@ class GUI {
   ~GUI();
   DELETE_COPY(GUI)
   DELETE_MOVE(GUI)
+  /**
+   * @brief Render the GUI panel.
+   *
+   */
   void render();
-
- private:
-  void renderMainPanel();
 };

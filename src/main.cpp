@@ -119,8 +119,8 @@ int main() {
   Camera camera(Eigen::Vector4f(0, 2, -10, 1));
   UniformBuffer cameraUBO;
   cameraUBO.allocate(uboAlign(20 * sizeof(GLfloat)));
-  cameraUBO.load(0, 16 * sizeof(GLfloat), camera.getViewProjectionMatrix().data());
-  cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.getPosition().data());
+  cameraUBO.load(0, 16 * sizeof(GLfloat), camera.viewProjectionMatrix().data());
+  cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.position().data());
   cameraUBO.bindUniformBlockIndex(1, 0, uboAlign(20 * sizeof(GLfloat)));
   // Do one step simulation, used in some implicit methods
   std::function<void(void)> simulateOneStep = [&]() {
@@ -153,8 +153,8 @@ int main() {
       cameraChanged = true;
     }
     if (cameraChanged) {
-      cameraUBO.load(0, 16 * sizeof(GLfloat), camera.getViewProjectionMatrix().data());
-      cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.getPosition().data());
+      cameraUBO.load(0, 16 * sizeof(GLfloat), camera.viewProjectionMatrix().data());
+      cameraUBO.load(16 * sizeof(GLfloat), 4 * sizeof(GLfloat), camera.position().data());
     }
     // Check which integrator is selected in GUI.
     switch (currentIntegrator) {

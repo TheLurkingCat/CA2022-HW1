@@ -16,6 +16,10 @@ class Shape {
   Particles& particles() { return _particles; }
   Eigen::Matrix4f getModelMatrix() const { return modelMatrix; }
   Eigen::Matrix4f getNormalMatrix() const { return normalMatrix; }
+  /**
+   * @brief Compute gravity and viscous force.
+   *
+   */
   void computeExternalForce();
   virtual void collide(Shape* shape) = 0;
   virtual void collide(Cloth*) { return; }

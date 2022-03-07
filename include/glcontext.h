@@ -12,9 +12,7 @@ class OpenGLContext final {
   DELETE_MOVE(OpenGLContext)
   /// @brief Release resources
   ~OpenGLContext();
-  /**
-   * @brief Get OpenGL context.
-   */
+  /// @brief Get OpenGL context.
   static OpenGLContext& getContext();
   /// @return Current window handle.
   GLFWwindow* createWindow(const char* name, int width, int height, GLenum profile);
@@ -22,7 +20,7 @@ class OpenGLContext final {
   int getRefreshRate() const { return refreshRate; }
   /// @return The OpenGL context version.
   int getOpenGLVersion() const { return majorVersion * 10 + minorVersion; }
-  /// @brief Enable OpenGL's debug callback
+  /// @brief Print the system information.
   void printSystemInfo() const;
   /// @brief Enable OpenGL's debug callback, useful for debugging.
   void enableDebugCallback();
