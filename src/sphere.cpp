@@ -116,7 +116,14 @@ void Spheres::draw() const {
 void Spheres::collide(Shape* shape) { shape->collide(this); }
 void Spheres::collide(Cloth* cloth) {
   constexpr float coefRestitution = 0.0f;
-
+  // TODO: Collide with particle (Simple approach to handle softbody collision)
+  //   1. Detect collision.
+  //   2. If collided, update impulse directly to particles' velocity
+  //   3. (Bonus) You can add friction, which updates particles' acceleration a = F / m
+  // Note:
+  //   1. There are `sphereCount` spheres.
+  //   2. There are `particlesPerEdge * particlesPerEdge` particles.
+  //   3. See TODOs in Cloth::computeSpringForce if you don't know how to access data.
   for (int i = 0; i < sphereCount; ++i) {
     float inverseSphereMass = _particles.inverseMass(i);
     for (int j = 0; j < particlesPerEdge * particlesPerEdge; ++j) {
@@ -143,7 +150,14 @@ void Spheres::collide(Cloth* cloth) {
 
 void Spheres::collide() {
   constexpr float coefRestitution = 0.8f;
-
+  // TODO: Collide with another sphere (Rigidbody collision)
+  //   1. Detect collision.
+  //   2. If collided, update impulse directly to particles' velocity
+  //   3. (Bonus) You can add friction, which updates particles' acceleration a = F / m
+  // Note:
+  //   1. There are `sphereCount` spheres.
+  //   2. You may not want to calculate one sphere twice (a <-> b and b <-> a)
+  //   3. See TODOs in Cloth::computeSpringForce if you don't know how to access data.
   for (int i = 0; i < sphereCount; ++i) {
     float inverseSphere1Mass = _particles.inverseMass(i);
     for (int j = i + 1; j < sphereCount; ++j) {
