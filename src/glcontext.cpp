@@ -71,6 +71,7 @@ OpenGLContext::OpenGLContext() {
     std::cerr << "GLFW initialization failed" << std::endl;
     exit(EXIT_FAILURE);
   }
+#ifndef __APPLE__
   // Create a dummy window to test OpenGL version
   glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
   GLFWwindow* dummyWindow = glfwCreateWindow(1, 1, "dummy", nullptr, nullptr);
@@ -85,7 +86,10 @@ OpenGLContext::OpenGLContext() {
   glfwDestroyWindow(dummyWindow);
   GladGLContext* context = gladGetGLContext();
   memset(context, 0, sizeof(GladGLContext));
-
+#else
+  OpenGLContext::majorVersion = 3;
+  OpenGLContext::minorVersion = 3;
+#endif
   GLFWmonitor* moniter = glfwGetPrimaryMonitor();
   const GLFWvidmode* vidMode = glfwGetVideoMode(moniter);
   if (vidMode == nullptr) {
