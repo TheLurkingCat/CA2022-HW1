@@ -78,10 +78,69 @@ set(GLFW_BUILD_EXAMPLES OFF)
 set(GLFW_BUILD_TESTS OFF)
 set(GLFW_BUILD_DOCS OFF)
 set(GLFW_INSTALL OFF)
-# Homework
-add_subdirectory(src)
 # Third party libs
 add_subdirectory(extern/eigen)
 add_subdirectory(extern/glad)
 add_subdirectory(extern/glfw)
 add_subdirectory(extern/imgui)
+
+file(GLOB children RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/code ${CMAKE_CURRENT_SOURCE_DIR}/code/*)
+set(dirlist "")
+foreach(child ${children})
+  if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/code/${child})
+    if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/code/${child}/src)
+      list(APPEND dirlist ${child})
+    else()
+      message(STATUS "Ignore ${child}: No src folder!")
+    endif()
+  endif()
+endforeach()
+set(SUBDIRS ${dirlist})
+
+foreach(STUDENT_ID ${SUBDIRS})
+  set(HW1_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/code/${STUDENT_ID}/src)
+  set(HW1_SOURCE
+    ${HW1_SOURCE_DIR}/buffer.cpp
+    ${HW1_SOURCE_DIR}/camera.cpp
+    ${HW1_SOURCE_DIR}/cloth.cpp
+    ${HW1_SOURCE_DIR}/configs.cpp
+    ${HW1_SOURCE_DIR}/glcontext.cpp
+    ${HW1_SOURCE_DIR}/gui.cpp
+    ${HW1_SOURCE_DIR}/integrator.cpp
+    ${HW1_SOURCE_DIR}/particles.cpp
+    ${HW1_SOURCE_DIR}/shader.cpp
+    ${HW1_SOURCE_DIR}/shape.cpp
+    ${HW1_SOURCE_DIR}/sphere.cpp
+    ${HW1_SOURCE_DIR}/utils.cpp
+    ${HW1_SOURCE_DIR}/vertexarray.cpp
+  )
+
+  set(HW1_INCLUDE_DIR ${HW1_SOURCE_DIR}/../include)
+
+  add_executable(${STUDENT_ID} ${HW1_SOURCE} ${HW1_SOURCE_DIR}/main.cpp)
+  target_include_directories(${STUDENT_ID} PRIVATE ${HW1_INCLUDE_DIR})
+
+  add_dependencies(${STUDENT_ID} glad glfw eigen)
+  # Can include glfw and glad in arbitrary order
+  target_compile_definitions(${STUDENT_ID} PRIVATE GLFW_INCLUDE_NONE)
+  # More warnings
+  if (NOT MSVC)
+    target_compile_options(${STUDENT_ID}
+      PRIVATE "-Wall"
+      PRIVATE "-Wextra"
+      PRIVATE "-Wpedantic"
+    )
+  endif()
+  # Prefer std c++20, at least need c++17 to compile
+  set_target_properties(${STUDENT_ID} PROPERTIES
+    CXX_STANDARD 20
+    CXX_EXTENSIONS OFF
+  )
+
+  target_link_libraries(${STUDENT_ID}
+    PRIVATE glad
+    PRIVATE glfw
+    PRIVATE eigen
+    PRIVATE dearimgui
+  )
+endforeach()
