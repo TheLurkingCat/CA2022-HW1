@@ -1,7 +1,7 @@
 import os
 import shutil
 cwd = os.getcwd()
-hw1zip = os.path.join(cwd, "1101.5283-HW1 - Legacy OpenGL rendering-221621.zip")
+hw1zip = os.path.join(cwd, "1102.5281-HW1 - Particle system-263670.zip")
 hw1folder = os.path.join(cwd, "HW1")
 reportfolder = os.path.join(hw1folder, "report")
 codefolder = os.path.join(hw1folder, "code")
