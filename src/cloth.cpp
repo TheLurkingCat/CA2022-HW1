@@ -89,8 +89,8 @@ void Cloth::initializeSpring() {
   // Note:
   //   1. The particles index:
   //   ===============================================
-  //   0 1 2 3 ... particlesPerEdge
-  //   particlesPerEdge + 1 ....
+  //   0 1 2 3 ... particlesPerEdge - 1
+  //   particlesPerEdge ... ...
   //   ... ... particlesPerEdge * particlesPerEdge - 1
   //   ===============================================
   // Here is a simple example which connects the horizontal structrual springs.
